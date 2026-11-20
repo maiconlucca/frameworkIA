@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Autodiagnóstico de governança ética e legal da IA nas decisões das empresas, com índice de exposição, plano de ação por prioridade e modelos prontos.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1230'/%3E%3Ctext x='32' y='43' font-family='Arial' font-weight='800' font-size='30' fill='%23fff' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}</style>
+<title>Autodiagnóstico GEIA-D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: abertura escura com o convite e o roteiro de avaliação; barra de navegação fixa; ferramenta em duas colunas (afirmativas + painel de risco fixo); plano de ação por prioridade e prazo; depois, os componentes do framework em faixas largas. */
+:root {
+  --bg: #f2f4f8; --surface: #ffffff; --surface-2: #f7f8fb; --ink: #0e1630; --muted: #5a6480; --line: #dfe3ee;
+  --accent: #2447d8; --accent-ink: #ffffff; --accent-soft: #e6ebff;
+  --hero: #0b1230; --hero-2: #131c47; --hero-ink: #f1f3ff; --hero-muted: #a9b3dc; --hero-line: #2a356b;
+  --crit: #c2362b; --crit-soft: #fbe6e3; --warn: #a96a0c; --warn-soft: #fbefd7; --ok: #1c7a4c; --ok-soft: #def3e7; --hi: #d2571b; --hi-soft: #fde9dc;
+  --empty: #e4e8f1; --shadow: 0 1px 2px rgba(14,22,48,.06), 0 8px 24px -12px rgba(14,22,48,.18);
+  --f-display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+  --f-body: "Instrument Sans", "Segoe UI", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r: 14px; --r-s: 8px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #090d1c; --surface: #111730; --surface-2: #0d1226; --ink: #e8ebf8; --muted: #98a2c4; --line: #232b4d;
+  --accent: #8fa5ff; --accent-ink: #0a0f24; --accent-soft: #1a2350;
+  --hero: #060916; --hero-2: #0f1638; --hero-ink: #f1f3ff; --hero-muted: #a0aad3; --hero-line: #232c5c;
+  --crit: #f08a7c; --crit-soft: #3a1b18; --warn: #e6b256; --warn-soft: #382a10; --ok: #6fcf9c; --ok-soft: #12301f; --hi: #f39a63; --hi-soft: #3a2113;
+  --empty: #1c2444; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #090d1c; --surface: #111730; --surface-2: #0d1226; --ink: #e8ebf8; --muted: #98a2c4; --line: #232b4d;
+  --accent: #8fa5ff; --accent-ink: #0a0f24; --accent-soft: #1a2350;
+  --hero: #060916; --hero-2: #0f1638; --hero-ink: #f1f3ff; --hero-muted: #a0aad3; --hero-line: #232c5c;
+  --crit: #f08a7c; --crit-soft: #3a1b18; --warn: #e6b256; --warn-soft: #382a10; --ok: #6fcf9c; --ok-soft: #12301f; --hi: #f39a63; --hi-soft: #3a2113;
+  --empty: #1c2444; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6); color-scheme: dark; }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16.5px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+p { margin: 0; } ul, ol { margin: 0; }
+button { font: inherit; cursor: pointer; color: inherit; }
+a { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: 15px; text-decoration: none; }
+.btn.ghost { background: transparent; color: var(--accent); border-color: var(--line); }
+.btn.sm { padding: 6px 12px; font-size: 13.5px; }
+.btn:hover { filter: brightness(1.08); }
+
+/* abertura */
+.hero { background: radial-gradient(1100px 500px at 85% -10%, var(--hero-2), transparent 70%), var(--hero); color: var(--hero-ink); position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--hero-line) 1px, transparent 1px), linear-gradient(90deg, var(--hero-line) 1px, transparent 1px); background-size: 56px 56px; opacity: .35; mask-image: linear-gradient(to bottom, #000, transparent 85%); -webkit-mask-image: linear-gradient(to bottom, #000, transparent 85%); pointer-events: none; }
+.hero .wrap { position: relative; z-index: 1; padding-block: 48px 40px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 36px; align-items: end; }
+@media (max-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, 1fr); padding-block: 36px 32px; } }
+.hero .mono { color: var(--hero-muted); }
+.hero h1 { font-size: clamp(54px, 10vw, 108px); font-weight: 800; line-height: .9; letter-spacing: -.035em; margin-top: 14px; }
+.hero h1 small { display: block; font-size: clamp(19px, 2.4vw, 26px); font-weight: 500; letter-spacing: -.01em; line-height: 1.2; color: var(--hero-muted); margin-top: 14px; }
+.hero .lead { font-size: 18px; max-width: 56ch; margin-top: 18px; }
+.hero .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.hero .btn { background: #fff; color: #0b1230; border-color: #fff; }
+.hero .btn.ghost { background: transparent; color: var(--hero-ink); border-color: var(--hero-line); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 26px; color: var(--hero-muted); font-size: 14px; }
+.facts b { color: var(--hero-ink); font-family: var(--f-display); font-size: 20px; margin-right: 5px; }
+.guide { background: rgba(255,255,255,.06); border: 1px solid var(--hero-line); border-radius: var(--r); padding: 22px; display: grid; gap: 14px; backdrop-filter: blur(6px); }
+.guide h2 { font-size: 21px; font-weight: 700; }
+.guide ol { list-style: none; padding: 0; display: grid; gap: 12px; counter-reset: g; }
+.guide li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; font-size: 15px; color: var(--hero-muted); counter-increment: g; }
+.guide li::before { content: counter(g); width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--hero-line); display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px; color: var(--hero-ink); }
+.guide li b { color: var(--hero-ink); display: block; font-size: 15.5px; }
+.guide .note { font-size: 13px; color: var(--hero-muted); }
+
+/* navegação */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--hero); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; align-items: center; }
+.nav button { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.nav button:hover { background: var(--accent-soft); color: var(--accent); }
+.nav .go { margin-left: auto; background: var(--accent); color: var(--accent-ink); }
+.nav .go:hover { background: var(--accent); color: var(--accent-ink); filter: brightness(1.1); }
+
+/* seções */
+section.sec { padding-block: 44px 8px; display: grid; gap: 20px; scroll-margin-top: 60px; }
+.sec > header { display: grid; gap: 8px; max-width: 72ch; }
+.sec h2 { font-size: clamp(28px, 3.6vw, 40px); font-weight: 750; line-height: 1.05; }
+.sec header p { color: var(--muted); }
+.comp { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.comp i { font-style: normal; background: var(--accent); color: var(--accent-ink); width: 22px; height: 22px; border-radius: 6px; display: inline-grid; place-items: center; font-weight: 600; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); }
+.tag { display: inline-block; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; padding: 2px 7px; border-radius: 5px; white-space: nowrap; font-weight: 600; vertical-align: 1px; }
+.tag.L { background: var(--crit-soft); color: var(--crit); } .tag.A { background: var(--warn-soft); color: var(--warn); } .tag.R, .tag.B { background: var(--accent-soft); color: var(--accent); }
+
+/* ferramenta */
+.tool { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start; }
+@media (max-width: 960px) { .tool { grid-template-columns: minmax(0, 1fr); } .panel { position: static !important; order: -1; } }
+.howto { font-size: 15px; color: var(--muted); max-width: 78ch; }
+.howto b { color: var(--ink); }
+.dims { display: grid; gap: 16px; }
+.dim { padding: 20px 20px 6px; display: grid; }
+.dim header { display: grid; gap: 4px; padding-bottom: 12px; }
+.dim h3 { font-size: 21px; font-weight: 700; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.dim h3 .code { font-family: var(--f-mono); font-size: 13px; color: var(--accent); background: var(--accent-soft); padding: 2px 7px; border-radius: 6px; }
+.dim .q { color: var(--muted); font-size: 15px; }
+.dim .dscore { margin-left: auto; font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); font-weight: 500; }
+.item { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 14px 0; border-top: 1px solid var(--line); }
+.item .n { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.item .t { font-size: 15.5px; }
+.item .t .tag { margin-left: 6px; }
+.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 2px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { padding: 6px 12px; font-size: 13.5px; font-weight: 600; color: var(--muted); cursor: pointer; border-radius: 999px; user-select: none; min-width: 58px; text-align: center; }
+.seg input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: 1px; }
+.seg input[value="2"]:checked + label { background: var(--ok); color: var(--surface); }
+.seg input[value="1"]:checked + label { background: var(--warn); color: var(--surface); }
+.seg input[value="0"]:checked + label { background: var(--crit); color: var(--surface); }
+@media (max-width: 600px) { .item { grid-template-columns: 26px minmax(0, 1fr); } .seg { grid-column: 2; justify-self: start; } }
+.how { grid-column: 2 / -1; }
+.how summary { font-size: 13.5px; font-weight: 600; color: var(--accent); cursor: pointer; list-style: none; display: inline-flex; gap: 6px; align-items: center; }
+.how summary::-webkit-details-marker { display: none; }
+.how summary::before { content: "+"; font-family: var(--f-mono); }
+.how[open] summary::before { content: "–"; }
+.how .inner { margin-top: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-s); padding: 14px; display: grid; gap: 10px; }
+.how .why { font-family: var(--f-display); font-size: 17px; font-weight: 600; line-height: 1.3; }
+.how dl { margin: 0; display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 5px 10px; font-size: 14.5px; }
+.how dt { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.how dd { margin: 0; }
+.linkbtn { border: 0; background: none; padding: 0; color: var(--accent); font-weight: 600; font-size: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
+/* painel */
+.panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 62px); padding: 18px; display: grid; gap: 14px; max-height: calc(100vh - 80px); overflow-y: auto; }
+@media (max-width: 960px) { .panel { max-height: none; } }
+.panel h4 { font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.example { background: var(--warn-soft); border-radius: var(--r-s); padding: 10px 12px; font-size: 14px; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.risk { display: grid; gap: 6px; justify-items: center; text-align: center; }
+.gauge { width: 100%; max-width: 200px; }
+.gauge .bg { stroke: var(--empty); } .gauge .val { transition: stroke-dashoffset .4s ease, stroke .3s; }
+.gauge text { font-family: var(--f-display); fill: var(--ink); }
+.risk .band { font-family: var(--f-display); font-size: 22px; font-weight: 700; }
+.risk .sub { font-size: 13.5px; color: var(--muted); max-width: 34ch; }
+.pend { display: grid; gap: 6px; width: 100%; }
+.pend div { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; padding: 8px 10px; border-radius: var(--r-s); text-align: left; }
+.pend .pL { background: var(--crit-soft); } .pend .pA { background: var(--warn-soft); } .pend .pR { background: var(--accent-soft); }
+.pend b { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.score { display: flex; gap: 14px; align-items: center; padding-top: 4px; border-top: 1px solid var(--line); padding-top: 16px; }
+.score .big { font-family: var(--f-display); font-size: 46px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.score .big span { font-size: 22px; font-weight: 600; }
+.score .meta { display: grid; gap: 3px; font-size: 13.5px; color: var(--muted); }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 13.5px; justify-self: start; }
+.pill.l0 { background: var(--empty); color: var(--muted); } .pill.l1 { background: var(--crit-soft); color: var(--crit); } .pill.l2 { background: var(--warn-soft); color: var(--warn); } .pill.l3 { background: var(--ok-soft); color: var(--ok); }
+.bars { display: grid; gap: 10px; }
+.bar .lab { display: flex; justify-content: space-between; gap: 8px; font-size: 13.5px; margin-bottom: 3px; }
+.bar .lab b { font-family: var(--f-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+.track { position: relative; height: 8px; background: var(--empty); border-radius: 99px; }
+.track .fill { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--accent); transition: width .25s ease; }
+.track .ref { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink); border-radius: 2px; }
+.reflegend { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+.reflegend i { width: 2px; height: 14px; background: var(--ink); display: inline-block; }
+.map { display: grid; grid-template-columns: 26px repeat(5, 1fr); gap: 4px; align-items: center; }
+.map .rl { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+.map .c { height: 16px; border-radius: 4px; background: var(--empty); }
+.map .c.v2 { background: var(--ok); } .map .c.v1 { background: var(--warn); } .map .c.v0 { background: var(--crit); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.status { font-size: 13px; color: var(--muted); min-height: 1.2em; }
+
+/* plano */
+.tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .tiers { grid-template-columns: minmax(0, 1fr); } }
+.tier { padding: 18px; display: grid; gap: 8px; align-content: start; border-top: 4px solid var(--accent); }
+.tier.L { border-top-color: var(--crit); } .tier.A { border-top-color: var(--warn); }
+.tier .num { font-family: var(--f-display); font-size: 44px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.tier h3 { font-size: 18px; font-weight: 700; }
+.tier p { font-size: 14px; color: var(--muted); }
+.planbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.toggle { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.toggle button { border: 0; background: transparent; padding: 6px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.toggle button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.plan { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
+@media (max-width: 960px) { .plan { grid-template-columns: minmax(0, 1fr); } }
+.plan-col { padding: 16px; display: grid; gap: 4px; min-width: 0; }
+.plan-col > h3 { font-size: 20px; font-weight: 700; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.plan-col > h3 span { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
+.plan-col .prog { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.plan-col ul { list-style: none; padding: 0; display: grid; }
+.act { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 14.5px; }
+.act input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--ok); }
+.act .body { display: grid; gap: 5px; min-width: 0; }
+.act.done .txt { text-decoration: line-through; color: var(--muted); }
+.act small { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.act .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.plan-col .empty { color: var(--muted); font-size: 14px; padding: 10px 0; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--f-mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--surface-2); }
+.wide { min-width: 820px; }
+textarea.copybox { width: 100%; min-height: 160px; font-family: var(--f-mono); font-size: 12.5px; border: 1px solid var(--line); border-radius: var(--r-s); background: var(--surface); color: var(--ink); padding: 10px; }
+
+/* modelos */
+.models { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
+@media (max-width: 960px) { .models { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .models { grid-template-columns: minmax(0, 1fr); } }
+.model { padding: 18px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 70px; align-content: start; }
+.model.open { grid-column: 1 / -1; }
+.model h3 { font-size: 19px; font-weight: 700; }
+.model > p { font-size: 14.5px; color: var(--muted); }
+.model .rec { justify-self: start; }
+.model .meta { margin: 0; display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 4px 10px; font-size: 13px; }
+.model .meta dt { font-family: var(--f-mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+.model .meta dd { margin: 0; }
+.model .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.doc { margin-top: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-s); padding: 22px clamp(14px, 3vw, 34px); max-height: 640px; overflow: auto; display: grid; gap: 10px; font-size: 15px; }
+.doc h3 { font-size: 22px; font-weight: 800; letter-spacing: -.01em; }
+.doc h4 { font-size: 17px; font-weight: 700; margin-top: 10px; }
+.doc h5 { font-family: var(--f-body); font-size: 15px; font-weight: 700; margin: 6px 0 0; }
+.doc .note { background: var(--accent-soft); border-radius: var(--r-s); padding: 10px 12px; font-size: 14px; }
+.doc ul { padding-left: 20px; display: grid; gap: 4px; }
+.doc ul.chk { list-style: none; padding-left: 0; }
+.doc ul.chk li::before { content: "☐"; margin-right: 8px; color: var(--muted); }
+.doc .tw { overflow-x: auto; }
+.doc table { font-size: 13.5px; border: 1px solid var(--line); background: var(--surface); }
+.doc th, .doc td { padding: 7px 10px; border: 1px solid var(--line); }
+.doc th { text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 13px; color: var(--ink); }
+.doc .sig { border-top: 1px solid var(--ink); width: min(320px, 100%); margin-top: 28px; }
+
+/* framework */
+.princ { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 900px) { .princ { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .princ { grid-template-columns: minmax(0, 1fr); } }
+.princ div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-s); padding: 14px; display: grid; gap: 4px; align-content: start; }
+.princ b { font-family: var(--f-display); font-size: 16.5px; line-height: 1.2; }
+.princ span { font-size: 13.5px; color: var(--muted); }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.box { padding: 18px; display: grid; gap: 14px; min-width: 0; align-content: start; }
+.box h3 { font-size: 18px; font-weight: 700; }
+.box ol, .box ul { padding-left: 20px; display: grid; gap: 6px; font-size: 15px; }
+.reasons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .reasons { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .reasons { grid-template-columns: minmax(0, 1fr); } }
+.reasons div { border-left: 3px solid var(--warn); padding: 2px 0 2px 12px; display: grid; gap: 4px; }
+.reasons b { font-family: var(--f-display); font-size: 16px; }
+.reasons span { font-size: 14px; color: var(--muted); }
+fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 2px; align-content: start; }
+legend { font-weight: 700; margin-bottom: 4px; padding: 0; font-family: var(--f-display); font-size: 17px; }
+.opt { display: flex; gap: 8px; align-items: flex-start; font-size: 15px; cursor: pointer; padding: 7px 10px; border-radius: var(--r-s); }
+.opt:hover { background: var(--accent-soft); }
+.opt input { margin-top: 4px; accent-color: var(--accent); }
+.lvbadge { display: flex; gap: 12px; align-items: center; }
+.lvbadge .code { font-family: var(--f-display); font-weight: 800; font-size: 40px; line-height: 1; padding: 8px 14px; border-radius: var(--r-s); }
+.code.N1 { background: var(--ok-soft); color: var(--ok); } .code.N2 { background: var(--warn-soft); color: var(--warn); } .code.N3 { background: var(--crit-soft); color: var(--crit); }
+.lvbadge .nm { font-family: var(--f-display); font-size: 21px; font-weight: 700; }
+.warnp { font-size: 14.5px; color: var(--crit); font-weight: 600; }
+td.cell { text-align: center; font-family: var(--f-mono); font-weight: 600; }
+td.cell.on { outline: 3px solid var(--accent); outline-offset: -3px; }
+.mx td.N1 { color: var(--ok); } .mx td.N2 { color: var(--warn); } .mx td.N3 { color: var(--crit); }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 900px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+.step { padding: 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.step .num { font-family: var(--f-display); font-size: 40px; font-weight: 800; color: var(--accent); line-height: 1; }
+.step h3 { font-size: 19px; font-weight: 700; }
+.step p { font-size: 14.5px; }
+.step dl { margin: 0; display: grid; gap: 3px; font-size: 13.5px; }
+.step dt { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.step dd { margin: 0 0 4px; }
+.tracks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .tracks { grid-template-columns: minmax(0, 1fr); } }
+.track-card { padding: 18px; display: grid; gap: 8px; align-content: start; }
+.track-card h3 { font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.track-card .for { font-size: 14px; color: var(--muted); }
+.track-card ul { padding-left: 18px; font-size: 14.5px; display: grid; gap: 3px; }
+.track-card.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+.printhead { display: none; }
+.final { background: var(--hero); color: var(--hero-ink); border-radius: var(--r); padding: 32px; display: grid; gap: 12px; justify-items: start; margin-top: 44px; }
+.final h2 { font-size: clamp(26px, 3.4vw, 36px); font-weight: 750; }
+.final p { color: var(--hero-muted); max-width: 62ch; }
+.final .btn { background: #fff; color: #0b1230; border-color: #fff; }
+footer.site { padding-block: 30px 44px; color: var(--muted); font-size: 13.5px; display: grid; gap: 8px; max-width: 86ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media print {
+  .hero, .nav, .noprint, .how, .actions, .planbar, .final, #form, #diagnostico > header, #diagnostico > .scroll, #modelos, .fw, footer.site, #copyStatus, .copybox, .example, .status { display: none !important; }
+  .printhead { display: block !important; margin-bottom: 10px; }
+  .panel { box-shadow: none; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; break-inside: avoid; }
+  .tiers { grid-template-columns: repeat(3, 1fr); } .tier { box-shadow: none; break-inside: avoid; }
+  .plan-col { break-inside: auto; box-shadow: none; } #plano > header p { font-size: 11px; }
+  body { background: #fff; font-size: 12px; } .card, .scroll { box-shadow: none; }
+  .tool { grid-template-columns: 1fr; } .panel { position: static; max-height: none; order: -1; }
+  .plan { grid-template-columns: 1fr; } section.sec { padding-block: 16px 0; }
+  .act { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <p class="mono">Framework de governança ética e legal da IA · PPGOLD/UFPR · 2026</p>
+      <h1>GEIA-D<small>Sua empresa usa IA para decidir.<br>Sabe o que isso exige dela?</small></h1>
+      <p class="lead">Em cerca de 10 minutos, descubra o seu índice de exposição, quais obrigações legais já estão pendentes e saia com um plano de ação por prioridade, com modelos prontos para adaptar.</p>
+      <div class="cta">
+        <button type="button" class="btn" data-go="diagnostico">Começar o autodiagnóstico</button>
+        <button type="button" class="btn ghost" data-go="framework">Conhecer o framework</button>
+      </div>
+      <p class="facts"><span><b>25</b>afirmativas</span><span><b>14</b>requisitos obrigatórios</span><span><b>10</b>modelos prontos</span><span><b>63</b>empresas na pesquisa</span></p>
+    </div>
+    <aside class="guide noprint" id="avaliar">
+      <p class="mono">Para especialistas convidados</p>
+      <h2>Como avaliar o framework</h2>
+      <ol>
+        <li><span><b>Percorra os nove componentes</b>Cada parte que você vai avaliar está marcada na página com um número, de 1 a 9.</span></li>
+        <li><span><b>Teste o autodiagnóstico</b>Responda pensando em uma empresa que você conhece e veja o resultado, o plano e os modelos.</span></li>
+        <li><span><b>Registre a sua avaliação</b>O formulário é anônimo e leva cerca de 20 minutos.</span></li>
+      </ol>
+      <a class="btn" href="https://forms.cloud.microsoft/r/hPSLya0pQD" target="_blank" rel="noopener">Avaliar o framework</a>
+      <p class="note">As respostas do autodiagnóstico ficam apenas no seu navegador e não são enviadas ao pesquisador.</p>
+    </aside>
+  </div>
+</div>
+
+<nav class="nav noprint" aria-label="Seções">
+  <div class="wrap">
+    <button type="button" data-go="diagnostico">Autodiagnóstico</button>
+    <button type="button" data-go="plano">Plano de ação</button>
+    <button type="button" data-go="modelos">Modelos</button>
+    <button type="button" data-go="framework">Princípios</button>
+    <button type="button" data-go="lei">Base legal</button>
+    <button type="button" data-go="classificar">Matriz</button>
+    <button type="button" data-go="ciclo">Ciclo</button>
+    <button type="button" data-go="trilhas">Trilhas</button>
+    <button type="button" data-go="indicadores">Indicadores</button>
+    <button type="button" class="go" data-go="avaliar-fim">Avaliar</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="printhead"><h1 style="font-size:22px">GEIA-D · Resultado do autodiagnóstico e checklist de implantação</h1><p style="font-size:12px;color:var(--muted)">Empresa: ______________________________ · Responsável: ____________________ · Data: <span id="printDate"></span></p></div>
+  <section class="sec" id="diagnostico">
+    <header>
+      <p class="comp"><i>7</i>Autodiagnóstico e níveis de maturidade</p>
+      <h2>Onde a sua empresa está hoje</h2>
+      <p class="howto">Marque <b>Sim</b> quando a prática existe, é aplicada de forma regular e pode ser comprovada. Marque <b>Parcial</b> quando existe só em parte das áreas ou de modo informal. Marque <b>Não</b> quando não existe ou você não sabe. <span class="tag L">Legal</span> indica exigência já em vigor. <span class="tag A">Obrigatório PL</span> indica requisito do PL nº 2.338/2023 que o framework antecipa.</p>
+    </header>
+    <div class="tool">
+      <form class="dims" id="form" autocomplete="off"></form>
+      <aside class="panel card" id="panel" aria-live="polite">
+        <div class="example" id="exampleNote" hidden>
+          <span>Exemplo de uma empresa de porte médio. Não são dados da sua empresa.</span>
+          <button type="button" class="btn sm ghost" id="clearFromExample">Limpar e começar</button>
+        </div>
+        <div class="risk">
+          <h4>Índice de exposição</h4>
+          <svg class="gauge" viewBox="0 0 220 128" role="img" aria-labelledby="gt">
+            <title id="gt">Índice de exposição da empresa</title>
+            <path class="bg" d="M20 112 A90 90 0 0 1 200 112" fill="none" stroke-width="16" stroke-linecap="round"/>
+            <path class="val" id="gVal" d="M20 112 A90 90 0 0 1 200 112" fill="none" stroke-width="16" stroke-linecap="round" stroke="var(--empty)" stroke-dasharray="282.74" stroke-dashoffset="282.74"/>
+            <text id="gNum" x="110" y="104" text-anchor="middle" font-size="46" font-weight="800">–</text>
+          </svg>
+          <p class="band" id="rBand">Sem respostas</p>
+          <p class="sub" id="rSub">Quanto maior o índice, maior o peso do que está pendente. As exigências legais pesam três vezes mais.</p>
+          <div class="pend" id="pend"></div>
+        </div>
+        <div class="score">
+          <div class="big" id="total">0<span>%</span></div>
+          <div class="meta"><span class="pill l0" id="level">Sem respostas</span><span id="count">0 de 25 respondidas</span></div>
+        </div>
+        <div>
+          <h4>Pontuação por dimensão</h4>
+          <div class="bars" id="bars"></div>
+          <p class="reflegend"><i></i>Média das empresas pesquisadas</p>
+        </div>
+        <div>
+          <h4>Mapa das 25 afirmativas</h4>
+          <div class="map" id="map"></div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn sm" data-go="plano">Ver o plano de ação</button>
+          <button type="button" class="btn sm ghost" id="sample">Ver exemplo</button>
+          <button type="button" class="btn sm ghost" id="clear">Limpar</button>
+        </div>
+        <p class="status" id="status"></p>
+      </aside>
+    </div>
+    <div class="scroll"><table id="matur"></table></div>
+  </section>
+
+  <section class="sec" id="plano">
+    <header>
+      <p class="comp"><i>8</i>Plano de ação e roteiro de 90 dias</p>
+      <h2>O que fazer, em que ordem</h2>
+      <p id="planLead"></p>
+    </header>
+    <div class="tiers" id="tiers"></div>
+    <div class="planbar">
+      <div class="toggle noprint" role="group" aria-label="Agrupar o plano">
+        <button type="button" id="byPrazo" aria-pressed="true">Por prazo</button>
+        <button type="button" id="byPrio" aria-pressed="false">Por prioridade</button>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn sm" id="copy">Copiar resultado e checklist</button>
+        <button type="button" class="btn sm ghost" id="print" hidden>Imprimir</button>
+      </div>
+    </div>
+    <p class="status" id="copyStatus"></p>
+    <textarea class="copybox" id="copybox" readonly hidden aria-label="Resultado e checklist para copiar"></textarea>
+    <div class="plan" id="planCols"></div>
+  </section>
+
+  <section class="sec" id="modelos">
+    <header>
+      <p class="comp"><i>6</i>Instrumentos de apoio</p>
+      <h2>Modelos prontos para adaptar</h2>
+      <p>Dez documentos completos, prontos para adaptar: cada um diz quando usar, quem conduz e em que norma se apoia. Copie, preencha os campos entre colchetes e ajuste à realidade da empresa. Os que resolvem pendências do seu diagnóstico aparecem marcados.</p>
+    </header>
+    <div class="models" id="models"></div>
+    <div class="scroll"><table id="instr"></table></div>
+  </section>
+
+  <section class="sec fw" id="framework">
+    <header>
+      <p class="comp"><i>1</i>Princípios e dimensões</p>
+      <h2>Oito princípios, cinco dimensões</h2>
+      <p>O GEIA-D nasceu da análise de 38 documentos científicos e normativos e de um levantamento com 63 empresas que atuam no Brasil. Os princípios formam a base, e as dimensões organizam o que a empresa precisa ter.</p>
+    </header>
+    <div class="princ" id="princ"></div>
+    <div class="scroll"><table class="wide" id="dimsT"></table></div>
+    <div class="card box"><h3>Seis premissas</h3><ol id="prem"></ol></div>
+  </section>
+
+  <section class="sec fw" id="lei">
+    <header>
+      <p class="comp"><i>2</i>Base legal e requisitos obrigatórios</p>
+      <h2>O que já é lei e o que vem por aí</h2>
+      <p>O Brasil ainda não tem uma lei específica sobre IA, mas decisões apoiadas por IA já estão sujeitas a obrigações. Além delas, o GEIA-D trata como obrigatórios os requisitos do PL nº 2.338/2023 que também constam de referências internacionais. Juntos, formam o núcleo obrigatório: 14 das 25 afirmativas.</p>
+    </header>
+    <h3 style="font-size:20px"><span class="tag L">Legal</span> Exigências em vigor</h3>
+    <div class="scroll"><table class="wide" id="legal"></table></div>
+    <h3 style="font-size:20px"><span class="tag A">Obrigatório PL</span> Requisitos antecipados do PL nº 2.338/2023</h3>
+    <div class="reasons" id="razoes"></div>
+    <div class="scroll"><table class="wide" id="pl"></table></div>
+  </section>
+
+  <section class="sec fw" id="classificar">
+    <header>
+      <p class="comp"><i>3</i>Matriz de classificação e níveis de controle</p>
+      <h2>Nem todo uso de IA pede o mesmo cuidado</h2>
+      <p>O nível de controle depende de duas perguntas: qual é o papel da IA na decisão e quais efeitos a decisão produz. Escolha as respostas e veja os controles mínimos.</p>
+    </header>
+    <div class="two">
+      <div class="card box">
+        <fieldset id="papelSet"><legend>Qual é o papel da IA na decisão?</legend></fieldset>
+        <fieldset id="efeitoSet"><legend>Quais efeitos a decisão produz?</legend></fieldset>
+      </div>
+      <div class="card box" id="classResult"></div>
+    </div>
+    <div class="scroll"><table class="mx" id="matrix" style="min-width:620px"></table></div>
+  </section>
+
+  <section class="sec fw" id="ciclo">
+    <header>
+      <p class="comp"><i>4</i>Ciclo de governança em seis etapas</p>
+      <h2>Seis etapas para cada uso de IA</h2>
+      <p>O ciclo é percorrido para cada uso de IA e repetido periodicamente, com a profundidade definida pelo nível de controle.</p>
+    </header>
+    <div class="steps" id="steps"></div>
+    <div class="scroll"><table class="wide" id="norm"></table></div>
+  </section>
+
+  <section class="sec fw" id="trilhas">
+    <header>
+      <p class="comp"><i>5</i>Trilhas de adoção</p>
+      <h2>Comece pelo essencial</h2>
+      <p>As trilhas são cumulativas. O porte é uma referência, e a escolha também considera o nível de controle das decisões em que a IA é usada.</p>
+    </header>
+    <div class="tracks" id="tracks"></div>
+  </section>
+
+  <section class="sec fw" id="indicadores">
+    <header>
+      <p class="comp"><i>9</i>Critérios e indicadores de verificação</p>
+      <h2>Como saber se está funcionando</h2>
+      <p>Além do autodiagnóstico, a empresa acompanha indicadores nas perspectivas ética, legal e organizacional.</p>
+    </header>
+    <div class="scroll"><table id="crit"></table></div>
+  </section>
+
+  <div class="final noprint" id="avaliar-fim">
+    <p class="mono" style="color:var(--hero-muted)">Especialistas convidados</p>
+    <h2>Viu os nove componentes? Agora é a sua vez.</h2>
+    <p>A sua avaliação ajuda a ajustar o framework antes de ele chegar às empresas. O formulário é anônimo, leva cerca de 20 minutos e pede uma nota de relevância, clareza e aplicabilidade para cada componente.</p>
+    <a class="btn" href="https://forms.cloud.microsoft/r/hPSLya0pQD" target="_blank" rel="noopener">Avaliar o framework</a>
+  </div>
+
+  <footer class="site">
+    <p>Framework desenvolvido na pesquisa de mestrado de Maicon Scariotti Lucca (PPGOLD/UFPR, 2026), sob orientação do Prof. Dr. Mauro Lizot.</p>
+    <p>O índice de exposição pondera cada pendência pelo tipo de exigência: legal vigente (peso 3), requisito antecipado (peso 2) e boa prática (peso 1). Resposta parcial conta metade. É um indicador de orientação, não uma medida jurídica de risco.</p>
+    <p>As médias de referência foram estimadas com as respostas de 63 empresas que utilizam IA, coletadas entre outubro e novembro de 2026, em 23 das 25 afirmativas. A amostra não representa todas as empresas brasileiras.</p>
+    <p>As referências ao PL nº 2.338/2023 consideram o texto aprovado pelo Senado Federal em dezembro de 2024, sujeito a alterações na Câmara dos Deputados. As bases legais indicadas são as mais diretamente relacionadas a cada ação e não esgotam a legislação aplicável. Este instrumento não constitui parecer jurídico.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = {"dims": [{"id": "D1", "nome": "Contexto decisório e classificação", "pergunta": "Onde e como a IA influencia as decisões da empresa?", "media": 42.9}, {"id": "D2", "nome": "Princípios aplicados à decisão", "pergunta": "As decisões apoiadas por IA são explicáveis, justas, supervisionadas e têm um responsável?", "media": 41.9}, {"id": "D3", "nome": "Mecanismos de governança", "pergunta": "Quais estruturas e processos sustentam a governança da IA?", "media": 26.8}, {"id": "D4", "nome": "Conformidade regulatória", "pergunta": "A empresa atende às normas vigentes e está preparada para as futuras?", "media": 42.5}, {"id": "D5", "nome": "Capacidades e contexto brasileiro", "pergunta": "A empresa tem pessoas preparadas e considera a realidade do país?", "media": 41.7}], "itens": [{"d": "D1", "t": "A empresa mantém uma lista atualizada dos usos de IA em decisões, incluindo as ferramentas de IA generativa de uso geral."}, {"d": "D1", "t": "Para cada uso, estão identificados a decisão apoiada e o papel da IA (informa, recomenda ou decide)."}, {"d": "D1", "t": "Estão identificados os efeitos das decisões apoiadas por IA sobre pessoas (clientes, colaboradores, candidatos ou fornecedores) e sobre os seus direitos."}, {"d": "D1", "t": "Cada uso de IA está classificado em um nível de controle (básico, reforçado ou crítico)."}, {"d": "D1", "t": "A confiança nos resultados da IA é sustentada por verificações formais, e não apenas pela percepção de desempenho da ferramenta."}, {"d": "D2", "t": "A empresa consegue explicar, em linguagem compreensível, os principais critérios de uma decisão apoiada por IA."}, {"d": "D2", "t": "As pessoas afetadas são informadas quando a IA é utilizada em decisões que as envolvem."}, {"d": "D2", "t": "Os dados e os resultados da IA são verificados para identificar tratamentos desiguais entre grupos de pessoas."}, {"d": "D2", "t": "Decisões relevantes passam por revisão humana com autoridade para alterar ou reverter o resultado, e as recomendações da IA não são aceitas sem questionamento."}, {"d": "D2", "t": "Está definido quem responde por cada decisão apoiada por IA e o que fazer em caso de erro ou dano."}, {"d": "D3", "t": "Existe política ou diretriz formal sobre o uso de IA, aprovada pela alta direção."}, {"d": "D3", "t": "Há uma pessoa ou área formalmente designada para a governança da IA."}, {"d": "D3", "t": "Os usos de IA de nível crítico passam por avaliação de impacto antes da implantação."}, {"d": "D3", "t": "O desempenho dos sistemas de IA é monitorado, e há registros que permitem reconstituir como uma decisão foi tomada."}, {"d": "D3", "t": "Existe procedimento para registrar e tratar incidentes envolvendo IA."}, {"d": "D4", "t": "Os dados pessoais utilizados pela IA são tratados em conformidade com a LGPD."}, {"d": "D4", "t": "Existe canal para que as pessoas afetadas solicitem a revisão ou contestem decisões tomadas com base em tratamento automatizado."}, {"d": "D4", "t": "Os contratos com fornecedores de IA tratam de transparência, uso de dados e responsabilidades."}, {"d": "D4", "t": "A empresa acompanha a evolução da regulação da IA (PL nº 2.338/2023, orientações da ANPD e referências internacionais)."}, {"d": "D4", "t": "A empresa adota práticas de governança de IA de forma antecipada, mesmo sem obrigação legal específica."}, {"d": "D5", "t": "Gestores e usuários recebem capacitação sobre o uso responsável e crítico da IA."}, {"d": "D5", "t": "A empresa dispõe de pessoas com competências para avaliar riscos éticos e legais da IA."}, {"d": "D5", "t": "As soluções de IA utilizadas são avaliadas quanto à adequação ao contexto brasileiro (idioma, legislação e perfil da população)."}, {"d": "D5", "t": "As desigualdades sociais e raciais do país são consideradas ao avaliar o uso de IA em decisões."}, {"d": "D5", "t": "Os efeitos sobre os trabalhadores e os impactos ambientais são considerados na adoção de soluções de IA."}], "total": 38.9, "niveis": {"Inicial": [33, 52.4], "Em estruturação": [23, 36.5], "Estruturado": [7, 11.1]}, "nucMedia": 38.1, "papeis": ["Informa (fornece dados ou análises; a pessoa decide)", "Recomenda (a pessoa aprova, ajusta ou rejeita)", "Decide, com revisão humana posterior", "Decide, sem revisão humana"], "efeitos": ["Sem efeito direto sobre pessoas", "Com efeito sobre pessoas", "Com efeito sobre direitos ou oportunidades, ou com dados sensíveis"], "matriz": [["N1", "N2", "N3"], ["N1", "N2", "N3"], ["N2", "N3", "N3"], ["N2", "N3 – evitar", "N3 – evitar"]], "controles": [["N1", "Básico", "Registro no inventário; uso conforme a política; responsável definido; cuidado com dados pessoais e confidenciais, inclusive nas ferramentas de IA generativa."], ["N2", "Reforçado", "Controles do N1 + revisão humana antes de a decisão produzir efeitos; capacidade de explicar os critérios; informação às pessoas afetadas; registro da decisão; monitoramento periódico dos resultados."], ["N3", "Crítico", "Controles do N2 + avaliação de impacto prévia (com RIPD, quando houver dados pessoais); verificação de vieses; supervisor com autoridade para reverter o resultado; canal de revisão e contestação; aprovação pela alta direção ou comitê; auditoria periódica."]], "ciclo": [["1. Mapear", "Listar os usos de IA em decisões, incluindo ferramentas generativas de uso geral; identificar a decisão, o papel da IA, os dados e os efeitos sobre pessoas.", "Responsável de governança de IA, com os gestores das áreas", "Inventário atualizado"], ["2. Classificar", "Aplicar a matriz de níveis de controle a cada uso e definir os controles; revisar a classificação quando o uso mudar.", "Gestor dono da decisão, validado pelo responsável de governança", "Nível registrado no inventário"], ["3. Avaliar antes de usar", "Verificar finalidade, qualidade e representatividade dos dados, risco de discriminação, segurança, adequação ao contexto brasileiro e contrato com o fornecedor; no nível crítico, fazer avaliação de impacto.", "Gestor dono da decisão, com TI, jurídico e proteção de dados", "Checklist ou relatório de avaliação aprovado"], ["4. Decidir com supervisão efetiva", "Garantir revisão humana com autoridade para alterar ou reverter; registrar quando a recomendação é acolhida ou rejeitada e por quê; explicar os critérios e informar as pessoas afetadas.", "Gestor dono da decisão", "Registro da decisão e da revisão"], ["5. Monitorar e responder", "Acompanhar desempenho, desvios e tratamentos desiguais; manter canal de revisão e contestação; tratar erros e incidentes e comunicá-los quando exigido.", "Responsável de governança e gestores", "Indicadores; registro de contestações e incidentes"], ["6. Capacitar e prestar contas", "Capacitar gestores e usuários para o uso crítico da IA; reportar periodicamente à alta direção; revisar a política e repetir o autodiagnóstico.", "Alta direção e responsável de governança", "Registro de capacitações; relatório anual; autodiagnóstico"]], "trilhas": [["Essencial", "Todas as empresas, em especial as que ainda não possuem mecanismos formais e as de pequeno porte", "Política de uso de IA, incluindo IA generativa; responsável designado; inventário dos usos; classificação pela matriz de níveis; capacitação básica de gestores e usuários; cuidado com dados pessoais e confidenciais."], ["Estruturada", "Empresas de porte médio e as que usam IA com frequência em decisões de nível reforçado ou crítico", "Trilha essencial + avaliação prévia (checklist) e avaliação de impacto no nível crítico; registro das decisões; monitoramento de resultados e de tratamentos desiguais; canal de revisão e contestação; procedimento de incidentes; cláusulas contratuais com fornecedores."], ["Avançada", "Grandes empresas e as que usam IA de forma intensiva em decisões de nível crítico", "Trilha estruturada + comitê multidisciplinar; auditoria interna ou externa periódica; indicadores reportados à alta direção; alinhamento a normas técnicas (ISO/IEC 42001) e a referências internacionais (AI Act)."]], "instrumentos": [["Política de uso de IA", "Finalidade e abrangência; usos permitidos, condicionados e proibidos; regras para IA generativa (dados que não podem ser inseridos e revisão do conteúdo gerado); papéis e responsabilidades; matriz de níveis; supervisão humana; canal de contestação; capacitação; revisão periódica.", "Essencial"], ["Programa de capacitação", "Funcionamento e limites da IA; viés de automação e uso crítico dos resultados; proteção de dados; explicação das decisões; conteúdo diferenciado para alta direção, gestores e usuários.", "Essencial"], ["Checklist de conformidade", "As 25 afirmativas deste autodiagnóstico e o plano de ação gerado a partir das respostas.", "Essencial"], ["Matriz de classificação", "Papel da IA × efeitos da decisão e controles por nível (componente 3).", "Essencial"], ["Guia de explicabilidade", "Quatro perguntas a responder em cada decisão de nível reforçado ou crítico: quais dados foram usados; quais critérios mais pesaram; qual foi o papel da IA e o da pessoa; como a pessoa afetada pode pedir revisão.", "Estruturada"], ["Roteiro de avaliação de impacto", "Descrição do uso; pessoas afetadas; riscos a direitos, de discriminação e de segurança; medidas de mitigação; RIPD, quando houver dados pessoais; aprovação.", "Estruturada"], ["Cláusulas contratuais", "Transparência sobre funcionamento e limitações; uso e localização dos dados; segurança; notificação de incidentes; responsabilidades; apoio a auditorias.", "Estruturada"], ["Indicadores", "Indicadores de verificação éticos, legais e organizacionais e evolução da pontuação no autodiagnóstico.", "Avançada"]], "normas": [["1. Mapear", "Art. 37 (registro das operações de tratamento)", "Avaliação preliminar dos sistemas", "Art. 26 (obrigações de quem utiliza sistemas de risco elevado)", "38507: responsabilidade do órgão de governança pelo uso da IA; 42001: contexto da organização (cláusula 4)"], ["2. Classificar", "Art. 11 (dados sensíveis) e art. 20 (decisões automatizadas)", "Classificação de risco (risco excessivo e alto risco)", "Art. 6º e Anexo III (sistemas de risco elevado)", "42001: avaliação de riscos de IA (cláusula 6.1)"], ["3. Avaliar antes de usar", "Art. 6º (princípios) e art. 38 (relatório de impacto)", "Avaliação de impacto algorítmico", "Art. 9º (gestão de riscos), art. 10 (dados) e art. 27 (impacto sobre direitos fundamentais)", "42001: avaliação de impacto do sistema de IA (cláusulas 6.1 e 8)"], ["4. Decidir com supervisão efetiva", "Art. 20 (revisão e informações sobre critérios)", "Direitos à explicação, à contestação e à revisão humana; supervisão humana", "Art. 13 (transparência), art. 14 (supervisão humana) e art. 50 (informação às pessoas)", "38507: a responsabilidade pelas decisões permanece com a organização"], ["5. Monitorar e responder", "Art. 46 (segurança) e art. 48 (comunicação de incidentes)", "Medidas de governança e comunicação de incidentes graves", "Art. 12 (registros), art. 72 (acompanhamento pós-comercialização) e art. 73 (incidentes graves)", "42001: avaliação do desempenho e melhoria (cláusulas 9 e 10)"], ["6. Capacitar e prestar contas", "Art. 41 (encarregado) e art. 50 (boas práticas e governança)", "Medidas de governança e boas práticas", "Art. 4º (literacia no domínio da IA)", "38507: supervisão pelo órgão de governança; 42001: liderança, política e competências (cláusulas 5 e 7)"]], "criterios": [["Ética", "Decisões explicáveis, justas e efetivamente supervisionadas", "Percentual de usos de nível reforçado ou crítico com explicação documentada; número de verificações de tratamentos desiguais realizadas; percentual de recomendações da IA alteradas ou rejeitadas na revisão humana."], ["Legal", "Conformidade com a LGPD e preparação para o marco legal", "Percentual de usos com dados pessoais com base legal definida e RIPD, quando exigido; prazo médio de resposta aos pedidos de revisão (art. 20 da LGPD); percentual de contratos com fornecedores de IA com cláusulas específicas."], ["Organizacional", "Governança implantada e incorporada à rotina", "Percentual de usos de IA inventariados e classificados; percentual de gestores capacitados; número de incidentes registrados e tratados; pontuação no autodiagnóstico e a sua evolução entre aplicações."]], "plano": [["Listar todos os usos de IA em decisões, área por área, incluindo as ferramentas generativas usadas pelos colaboradores.", "Inventário (planilha) com uso, área, fornecedor, dados e responsável", "B", "LGPD, art. 37, quando houver dados pessoais", 30], ["Registrar no inventário, para cada uso, qual decisão é apoiada e se a IA informa, recomenda ou decide.", "Inventário com os campos decisão e papel da IA preenchidos", "B", "ISO/IEC 38507", 30], ["Indicar, para cada uso, quem é afetado pela decisão e se ela alcança direitos ou oportunidades (crédito, emprego, preço, acesso a serviços).", "Campo de efeitos preenchido no inventário", "A", "PL nº 2.338/2023, arts. 12 a 14; AI Act, art. 6º", 60], ["Aplicar a matriz de níveis de controle a cada uso e registrar o nível (N1, N2 ou N3).", "Nível registrado no inventário e validado pelo responsável", "A", "PL nº 2.338/2023, arts. 13 e 14; AI Act, arts. 5º e 6º", 60], ["Definir como os resultados da IA são conferidos (amostragem, dupla checagem ou comparação com decisões humanas) e com que frequência.", "Rotina de verificação descrita e registros das conferências", "A", "PL nº 2.338/2023, art. 18, I; AI Act, art. 15; ISO/IEC 42001", 90], ["Preparar, para as decisões de nível N2 e N3, uma explicação em linguagem simples dos critérios utilizados (guia de explicabilidade).", "Explicação padrão documentada para cada decisão", "L", "LGPD, art. 20, § 1º", 60], ["Incluir aviso sobre o uso de IA nos canais em que a decisão é comunicada (contratos, políticas de privacidade, respostas a clientes e candidatos).", "Avisos e textos publicados", "L", "LGPD, art. 6º, VI, e art. 9º", 60], ["Comparar periodicamente os resultados da IA entre grupos de pessoas (por exemplo, gênero, idade e região) e corrigir diferenças sem justificativa.", "Relatório de verificação com data e medidas adotadas", "L", "LGPD, art. 6º, IX; Lei nº 9.029/1995", 90], ["Definir quem revisa as decisões de nível N2 e N3, com autoridade para alterar o resultado, e registrar quando a recomendação da IA foi alterada ou rejeitada.", "Fluxo de aprovação e registro das revisões", "A", "PL nº 2.338/2023, arts. 6º, III, e 8º; AI Act, art. 14", 60], ["Nomear o responsável por cada decisão apoiada por IA e escrever o que fazer quando houver erro ou dano (corrigir, comunicar e registrar).", "Responsáveis indicados no inventário e procedimento de erros", "L", "LGPD, art. 42; CDC, art. 14", 60], ["Aprovar na alta direção uma política de uso de IA, com os usos permitidos e proibidos e as regras para IA generativa.", "Política aprovada e divulgada aos colaboradores", "B", "LGPD, art. 50; ISO/IEC 38507", 30], ["Designar formalmente a pessoa ou a área responsável pela governança da IA (pode ser o encarregado de dados).", "Ato de designação e descrição das atribuições", "B", "LGPD, art. 41 (encarregado)", 30], ["Antes de implantar um uso de nível N3, fazer a avaliação de impacto (riscos, pessoas afetadas e medidas) e submetê-la à aprovação.", "Relatório de avaliação de impacto aprovado", "A", "PL nº 2.338/2023, arts. 25 e 26; AI Act, art. 27; LGPD, art. 38", 90], ["Definir indicadores de desempenho dos sistemas e guardar os registros que permitem reconstituir cada decisão relevante.", "Indicadores acompanhados e registros arquivados", "L", "LGPD, art. 37", 90], ["Criar um procedimento de incidentes com IA: quem avisar, como conter, quando comunicar a ANPD e os titulares.", "Procedimento escrito e registro dos incidentes", "L", "LGPD, art. 48", 90], ["Revisar, com o encarregado, a base legal, a finalidade e a segurança dos dados pessoais usados em cada sistema de IA.", "Registro das operações de tratamento atualizado", "L", "LGPD, arts. 6º, 7º, 11 e 46", 30], ["Disponibilizar um canal para pedidos de revisão de decisões automatizadas, com prazo de resposta definido.", "Canal divulgado e registro dos pedidos e das respostas", "L", "LGPD, arts. 18 e 20", 60], ["Incluir nos contratos com fornecedores de IA cláusulas sobre uso dos dados, transparência, segurança, incidentes e responsabilidades.", "Contratos ou aditivos assinados", "L", "LGPD, arts. 39 e 42", 90], ["Atribuir a alguém o acompanhamento do PL nº 2.338/2023, das orientações da ANPD e das referências internacionais, com reporte periódico.", "Informe periódico à direção", "B", "LGPD, art. 50", 90], ["Incluir a governança da IA no planejamento da empresa, com metas e prazos, sem esperar a aprovação do marco legal.", "Plano de ação aprovado pela direção", "B", "ISO/IEC 38507", 90], ["Realizar capacitação inicial de gestores e usuários sobre limites da IA, uso crítico dos resultados e proteção de dados.", "Lista de presença e conteúdo da capacitação", "R", "AI Act, art. 4º; PL nº 2.338/2023", 60], ["Identificar quem na empresa (ou qual parceiro externo) tem condições de avaliar riscos éticos e legais da IA e suprir as lacunas.", "Mapa de competências e plano de formação", "B", "ISO/IEC 42001", 90], ["Testar as soluções com dados e casos brasileiros e verificar idioma, legislação aplicável e local de armazenamento dos dados.", "Registro dos testes e da avaliação do fornecedor", "B", "LGPD, art. 33 (transferência internacional)", 90], ["Incluir na avaliação prévia a pergunta sobre efeitos em grupos vulneráveis e desigualdades sociais e raciais.", "Item preenchido no checklist ou na avaliação de impacto", "R", "LGPD, art. 6º, IX; PL nº 2.338/2023", 90], ["Avaliar os efeitos da IA sobre funções e pessoas da empresa e, nos usos intensivos, o consumo de recursos computacionais.", "Registro da avaliação e das medidas de transição", "B", "Recomendação da UNESCO", 90]], "baseNome": {"L": "Exigência legal vigente", "R": "Tendência regulatória", "B": "Boa prática"}, "nucleo": [6, 7, 8, 10, 14, 15, 16, 17, 18], "legal": [["Revisão de decisões automatizadas", "LGPD, art. 20", "O titular pode solicitar a revisão de decisões tomadas unicamente com base em tratamento automatizado que afetem os seus interesses, e a empresa deve informar os critérios e os procedimentos utilizados, quando solicitada.", "Canal de revisão e explicação dos critérios (afirmativas 6 e 17)"], ["Transparência e não discriminação", "LGPD, art. 6º, VI e IX, e art. 9º", "O tratamento de dados deve ser transparente para o titular e não pode ter fins discriminatórios ilícitos ou abusivos.", "Informação às pessoas afetadas e verificação de tratamentos desiguais (afirmativas 7 e 8)"], ["Registro e relatório de impacto", "LGPD, arts. 37 e 38", "A empresa deve manter registro das operações de tratamento, e a ANPD pode determinar a elaboração de relatório de impacto à proteção de dados pessoais.", "Inventário, registros e avaliação de impacto (afirmativas 1, 13 e 14)"], ["Segurança e incidentes", "LGPD, arts. 46 e 48", "Devem ser adotadas medidas de segurança, e os incidentes que possam causar risco ou dano relevante devem ser comunicados à ANPD e aos titulares.", "Avaliações de segurança e procedimento de incidentes (afirmativas 15 e 16)"], ["Responsabilidade e fornecedores", "LGPD, arts. 39 e 42; CDC, art. 14", "A empresa responde pelos danos causados pelo tratamento de dados e pelos defeitos dos serviços que presta, inclusive quando utiliza soluções de terceiros.", "Responsáveis definidos, procedimento de erros e contratos (afirmativas 10 e 18)"], ["Decisões sobre emprego e crédito", "Lei nº 9.029/1995; Lei nº 12.414/2011, art. 5º", "São proibidas práticas discriminatórias no acesso e na manutenção do emprego, e o cadastrado pode solicitar a revisão de decisão de crédito realizada exclusivamente por meios automatizados.", "Nível crítico (N3) na matriz e revisão humana (afirmativas 4, 8 e 9)"], ["Sanções", "LGPD, art. 52", "O descumprimento sujeita a empresa a advertência, multa de até 2% do faturamento, limitada a R$ 50 milhões por infração, publicização da infração e bloqueio ou eliminação dos dados.", "Prioridade às afirmativas do núcleo legal"]], "matur": [["Inicial", "Abaixo de 40%", "A IA é usada sem regras formais, e a empresa não sabe ao certo onde ela influencia as decisões.", "Cumprir o núcleo obrigatório; designar o responsável; fazer o inventário; aprovar a política de uso; capacitar gestores e usuários.", "Essencial"], ["Em estruturação", "De 40% a menos de 70%", "Existem regras e responsáveis, mas os controles não alcançam todas as decisões nem são verificados.", "Classificar os usos pela matriz; implantar revisão humana, explicação e registros nos níveis N2 e N3; abrir o canal de revisão; tratar incidentes e contratos.", "Estruturada"], ["Estruturado", "70% ou mais", "Os controles estão implantados e documentados na maior parte das decisões.", "Auditar periodicamente; acompanhar indicadores; reportar à alta direção; alinhar-se às normas técnicas e manter as evidências atualizadas.", "Avançada"]], "antecipados": [3, 4, 5, 9, 13], "principios": [["Transparência e explicabilidade", "A empresa sabe explicar, em linguagem simples, como a decisão foi tomada."], ["Justiça e não discriminação", "Os resultados são verificados para evitar tratamento desigual entre grupos."], ["Supervisão humana", "Uma pessoa com autoridade revisa e pode reverter a decisão."], ["Responsabilização", "Há sempre alguém que responde pela decisão, nunca a ferramenta."], ["Privacidade e proteção de dados", "Os dados pessoais são tratados conforme a LGPD."], ["Segurança e robustez", "Os sistemas são testados, monitorados e protegidos contra falhas."], ["Sustentabilidade socioambiental", "Os efeitos sobre trabalhadores e meio ambiente entram na conta."], ["Adequação ao contexto brasileiro", "Idioma, legislação e desigualdades do país são considerados."]], "premissas": ["A responsabilidade pela decisão é sempre de pessoas e da organização, nunca da ferramenta.", "As exigências legais já vigentes são o ponto de partida; as boas práticas vêm depois.", "As exigências são proporcionais ao papel da IA e aos efeitos da decisão sobre pessoas.", "A governança começa por um conjunto mínimo de mecanismos simples.", "A supervisão humana deve ser efetiva, e não apenas formal.", "As particularidades brasileiras são consideradas expressamente."], "dimComp": {"D1": "Inventário dos usos de IA; decisão apoiada, papel da IA e efeitos; matriz de níveis de controle", "D2": "Explicação dos critérios; informação às pessoas afetadas; verificação de tratamentos desiguais; supervisão humana efetiva; responsabilização", "D3": "Política de uso; responsável designado; avaliação prévia e de impacto; monitoramento e registros; gestão de incidentes", "D4": "LGPD; canal de contestação; contratos com fornecedores; acompanhamento regulatório", "D5": "Capacitação; competências; adequação ao contexto nacional; desigualdades; trabalhadores e meio ambiente"}, "pl": [["Identificação do risco e classificação dos usos, inclusive dos usos vedados", "Avaliação preliminar (art. 12); risco excessivo (art. 13) e alto risco (art. 14)", "AI Act, arts. 5º e 6º e Anexo III; ISO/IEC 42001, cláusula 6.1; OCDE", "Obrigatório · afirmativas 3 e 4", "A"], ["Supervisão humana efetiva e revisão humana", "Supervisão humana (art. 8º); direito à revisão humana (art. 6º, III)", "AI Act, arts. 14 e 26; OCDE e UNESCO", "Obrigatório no nível N3 · afirmativa 9", "A"], ["Avaliação de impacto antes da implantação", "Avaliação de impacto algorítmico (arts. 25 e 26)", "AI Act, art. 27; UNESCO; ISO/IEC 42001, cláusula 6.1.4", "Obrigatório no nível N3 · afirmativa 13", "A"], ["Testes e registro de desempenho, acurácia e vieses", "Medidas de governança para alto risco (art. 18, I, b e c)", "AI Act, arts. 9º e 15; ISO/IEC 42001, cláusula 9", "Obrigatório no nível N3 · afirmativa 5", "A"], ["Informação sobre o uso de IA", "Direito à informação (art. 5º, I)", "AI Act, art. 50; OCDE", "Já exigido · afirmativa 7", "L"], ["Explicação, contestação e revisão de decisões", "Arts. 6º, I e II, e 7º", "AI Act, art. 86; OCDE", "Já exigido · afirmativas 6 e 17", "L"], ["Não discriminação e correção de vieses", "Art. 5º, III; art. 18, I, e", "AI Act, art. 10; OCDE e UNESCO", "Já exigido · afirmativa 8", "L"], ["Documentação e registros", "Art. 18, I, a, e II, a e b", "AI Act, arts. 11, 12 e 26; ISO/IEC 42001, cláusula 7.5", "Já exigido · afirmativa 14", "L"], ["Comunicação de incidentes graves", "Art. 42", "AI Act, art. 73", "Já exigido · afirmativa 15", "L"]], "razoes": [["Convergência", "Os mesmos requisitos aparecem no projeto brasileiro, no AI Act europeu, nos princípios da OCDE, na Recomendação da UNESCO e na ISO/IEC 42001."], ["Já alcançam empresas daqui", "O AI Act vale para quem está fora da Europa quando o resultado do sistema é usado lá, e as exigências chegam às cadeias de fornecimento por contrato."], ["Parte já é exigível", "Explicação e revisão de decisões automatizadas, não discriminação e informação ao consumidor já decorrem da LGPD e do CDC."], ["Tempo de adaptação", "Classificar usos, avaliar impacto e documentar a supervisão humana leva tempo. Quem começa antes implanta com calma."]], "ganho": ["Você não governa o que não enxerga: em poucas horas, o inventário mostra onde a IA já decide na sua empresa.", "Saber se a IA informa, recomenda ou decide separa uma ferramenta de apoio de um risco jurídico.", "Identificar quem é afetado antecipa as reclamações antes que cheguem ao jurídico ou ao Procon.", "Um rótulo simples (N1, N2 ou N3) concentra o esforço de controle onde o risco é real e libera o resto.", "Trocar a sensação de que funciona por números protege a empresa quando alguém perguntar como a decisão foi validada.", "Uma explicação pronta transforma um pedido de revisão em resposta de minutos, e não em crise.", "Um aviso claro custa uma linha de texto e evita a acusação mais difícil de rebater: a de falta de transparência.", "Encontrar o viés antes do cliente, do candidato ou da imprensa é a forma mais barata de lidar com ele.", "Revisão humana de verdade é o que permite dizer, com provas, que a decisão foi da empresa e não da máquina.", "Com um responsável definido, o erro é corrigido em horas. Sem ele, vira disputa interna e passivo.", "A política dá segurança a quem usa IA todos os dias e mostra ao mercado que a direção está no comando.", "Um nome e um mandato bastam para a governança sair do papel, sem criar uma área nova.", "Avaliar antes de implantar custa uma reunião. Corrigir depois custa contratos, clientes e reputação.", "Registros bem guardados são a melhor defesa: permitem mostrar, meses depois, como cada decisão foi tomada.", "Quando o incidente acontece, um procedimento pronto reduz o dano e mantém a empresa dentro do prazo legal.", "A base legal correta é o alicerce de tudo o que se constrói com dados pessoais e IA.", "Um canal de revisão resolve dentro de casa o que, sem ele, vai para a ANPD ou para a Justiça.", "O contrato certo divide o risco com o fornecedor em vez de deixá-lo inteiro com a sua empresa.", "Acompanhar a regulação evita surpresas e dá tempo de se adaptar sem correria.", "Empresas que se antecipam negociam melhor com clientes, investidores e parceiros que já exigem governança.", "Pessoas preparadas usam melhor a IA e erram menos. É o investimento com retorno mais rápido da lista.", "Saber quem sabe o quê evita decisões às cegas e orienta quando chamar apoio externo.", "Soluções testadas com dados e casos brasileiros acertam mais, porque foram conferidas na realidade em que serão usadas.", "Olhar para os grupos vulneráveis protege as pessoas e a marca ao mesmo tempo.", "Planejar a transição com as pessoas reduz a resistência e mantém o conhecimento dentro da empresa."], "modelos": [{"id": "politica", "titulo": "Política de uso de inteligência artificial", "para": "Regras da casa para o uso de IA em toda a empresa, aprovadas pela alta direção.", "quando": "Antes de ampliar o uso de IA, ou já, se a IA é usada sem regras escritas.", "resp": "Responsável pela governança de IA, com jurídico e encarregado de dados; aprovação da alta direção.", "base": "LGPD, arts. 6º, 20, 37, 38, 46, 48 e 50; PL nº 2.338/2023, arts. 5º a 8º, 13, 14 e 18; ISO/IEC 42001, cláusula 5.2.", "texto": "# POLÍTICA DE USO DE INTELIGÊNCIA ARTIFICIAL\n> Como usar: preencha os campos entre colchetes, retire o que não se aplica à empresa e submeta o texto à aprovação da alta direção. Revise com o jurídico e com o encarregado de dados antes de publicar.\n| Campo | Preenchimento |\n| Empresa | [razão social] |\n| Versão | 1.0 |\n| Aprovada por | [diretoria, conselho ou sócios] em [data] |\n| Responsável pela política | [nome e área] |\n| Próxima revisão | [data, no máximo 12 meses após a aprovação] |\n## 1. Objetivo\nEstabelecer as regras para o uso de inteligência artificial (IA) na [empresa], de modo que as decisões apoiadas por IA sejam éticas, conformes à legislação e proporcionais aos riscos que produzem para pessoas e para o negócio.\n## 2. Abrangência\nEsta política vale para todos os colaboradores, gestores, estagiários e terceiros que utilizem IA em nome da empresa, inclusive ferramentas de IA generativa de uso geral (assistentes de texto, imagem e código), funcionalidades de IA embutidas em sistemas contratados e soluções desenvolvidas internamente.\n## 3. Definições\n- Uso de IA em decisão: qualquer situação em que um sistema de IA informa, recomenda ou toma uma decisão da empresa.\n- Dono da decisão: gestor da área que responde pela decisão apoiada por IA.\n- Pessoa afetada: cliente, colaborador, candidato, fornecedor ou qualquer pessoa sobre quem a decisão produz efeitos.\n- Nível de controle: classificação de cada uso em N1 (básico), N2 (reforçado) ou N3 (crítico), conforme a matriz do item 8.\n## 4. Princípios\n- Transparência e explicabilidade: a empresa sabe explicar, em linguagem simples, como a decisão foi tomada.\n- Justiça e não discriminação: os resultados são verificados para evitar tratamento desigual entre grupos de pessoas.\n- Supervisão humana: decisões relevantes são revisadas por pessoa com autoridade para alterá-las.\n- Responsabilização: toda decisão tem um responsável identificado; a responsabilidade nunca é da ferramenta.\n- Privacidade e proteção de dados: os dados pessoais são tratados conforme a LGPD.\n- Segurança e robustez: os sistemas são testados, monitorados e protegidos.\n- Sustentabilidade: os efeitos sobre trabalhadores e meio ambiente são considerados.\n- Adequação ao contexto brasileiro: idioma, legislação e desigualdades do país são levados em conta.\n## 5. Usos permitidos, condicionados e proibidos\n| Categoria | Exemplos | Regra |\n| Permitidos | Apoio à redação e revisão de textos sem dados pessoais; pesquisa; resumo de documentos públicos; apoio à programação | Livres, desde que com ferramentas homologadas e revisão humana do resultado |\n| Condicionados | Triagem de currículos; análise de crédito ou de cobrança; precificação; atendimento automatizado; avaliação de desempenho; [outros] | Exigem registro no inventário, classificação de nível e aplicação dos controles do item 8 antes do uso |\n| Proibidos | Ver lista abaixo | Não podem ser adotados em nenhuma hipótese |\nFicam proibidos:\n- usar IA para manipular pessoas por técnicas subliminares ou explorar vulnerabilidades de idade, deficiência ou situação socioeconômica;\n- atribuir pontuação social a pessoas para restringir o acesso a bens, serviços ou oportunidades;\n- deixar que a IA decida sozinha, sem revisão humana, sobre contratação, desligamento, crédito, preço individualizado ou acesso a serviços;\n- inserir dados pessoais sensíveis, dados de clientes, segredos comerciais ou informações confidenciais em ferramentas não homologadas pela empresa;\n- [outros usos vedados pela empresa].\n## 6. Regras para IA generativa\n- Usar apenas as ferramentas da lista de homologadas: [lista].\n- Não inserir dados pessoais, dados de clientes, contratos, informações financeiras não públicas ou código proprietário em ferramentas não homologadas.\n- Revisar todo conteúdo gerado antes de usá-lo, conferindo fatos, números, referências e direitos autorais.\n- Identificar como produzido com apoio de IA o conteúdo destinado ao público externo, quando houver risco de confusão.\n- Nunca apresentar o resultado da IA como decisão final sobre pessoas.\n## 7. Ciclo obrigatório para novos usos\nTodo novo uso condicionado percorre, antes de entrar em operação, as etapas do ciclo de governança: mapear, classificar, avaliar antes de usar, decidir com supervisão efetiva, monitorar e responder, capacitar e prestar contas. O dono da decisão inicia o ciclo e o responsável pela governança de IA o valida.\n## 8. Níveis de controle e controles mínimos\n| Nível | Quando se aplica | Controles mínimos |\n| N1 · Básico | A IA informa ou recomenda e a decisão não produz efeito direto sobre pessoas | Registro no inventário; uso conforme esta política; responsável definido; cuidado com dados |\n| N2 · Reforçado | A decisão produz efeito sobre pessoas | N1 + revisão humana antes do efeito; explicação dos critérios; aviso às pessoas afetadas; registro da decisão; monitoramento periódico |\n| N3 · Crítico | A decisão afeta direitos ou oportunidades, usa dados sensíveis ou a IA decide sem revisão | N2 + avaliação de impacto prévia; verificação de vieses; supervisor com poder de reverter; canal de revisão; aprovação da alta direção; auditoria periódica |\n## 9. Supervisão humana\nNos níveis N2 e N3, a decisão só produz efeito depois de revisada por pessoa capacitada e com autoridade para alterá-la ou revertê-la. O revisor não deve aceitar a recomendação da IA sem questionamento, e a empresa registra os casos em que a recomendação foi alterada ou rejeitada.\n## 10. Transparência e direitos das pessoas afetadas\n- Informar, nos canais em que a decisão é comunicada, que houve uso de IA.\n- Explicar, quando solicitado, os critérios e os procedimentos utilizados (LGPD, art. 20, § 1º).\n- Manter canal para pedidos de revisão e contestação: [canal], com resposta em até [prazo].\n## 11. Proteção de dados\n- Todo uso de IA com dados pessoais tem base legal definida e registrada (LGPD, arts. 7º, 11 e 37).\n- Coletar e usar apenas os dados necessários para a finalidade.\n- Elaborar relatório de impacto à proteção de dados (RIPD) nos usos de nível N3 com dados pessoais (LGPD, art. 38).\n- Verificar onde os dados são armazenados e observar as regras de transferência internacional (LGPD, art. 33).\n## 12. Fornecedores\nSoluções de IA só são contratadas após verificação do fornecedor e com as cláusulas mínimas de transparência, uso de dados, segurança, incidentes e responsabilidades.\n## 13. Papéis e responsabilidades\n| Papel | Responsabilidades |\n| Alta direção | Aprovar esta política e os usos de nível N3; receber o relatório periódico; prover recursos |\n| Responsável pela governança de IA | Manter o inventário; validar classificações; apoiar avaliações; tratar incidentes; propor revisões desta política |\n| Dono da decisão | Aplicar os controles do nível; garantir a revisão humana; responder pela decisão |\n| Encarregado de dados | Orientar sobre a LGPD; participar dos RIPD e dos incidentes com dados pessoais |\n| Jurídico | Revisar contratos e avisos; acompanhar a regulação |\n| TI e segurança | Homologar ferramentas; garantir registros e segurança |\n| Usuários | Usar a IA conforme esta política e comunicar erros e incidentes |\n## 14. Incidentes\nErros relevantes, tratamentos desiguais, vazamentos ou usos fora desta política devem ser comunicados a [responsável] em até 24 horas e tratados conforme o procedimento de incidentes com IA.\n## 15. Capacitação\nTodos os usuários recebem capacitação antes de usar IA em decisões, e os gestores, capacitação específica sobre supervisão humana e explicação das decisões.\n## 16. Descumprimento\nO descumprimento desta política sujeita o responsável às medidas previstas no [regulamento interno ou código de conduta], sem prejuízo das responsabilidades legais.\n## 17. Vigência e revisão\nEsta política entra em vigor na data de sua aprovação e será revista a cada [12] meses ou sempre que houver mudança relevante na legislação ou no uso de IA pela empresa.\n[Local e data]\n---\n[Nome e cargo de quem aprova]"}, {"id": "inventario", "titulo": "Manual de mapeamento e inventário dos usos de IA", "para": "Como descobrir onde a IA influencia decisões e registrar cada uso em um inventário.", "quando": "No início da implantação e, depois, a cada seis meses.", "resp": "Responsável pela governança de IA, com os gestores de cada área.", "base": "LGPD, art. 37; PL nº 2.338/2023, arts. 12 a 14; ISO/IEC 42001, cláusulas 4 e 6.1.", "texto": "# MANUAL DE MAPEAMENTO E INVENTÁRIO DOS USOS DE IA\n> Resultado esperado: uma planilha com uma linha por uso de IA, com a decisão apoiada, o papel da IA, as pessoas afetadas, o nível de controle e o responsável. Tempo estimado: de duas a quatro semanas na primeira rodada.\n## 1. Para que serve\nVocê não governa o que não enxerga. O inventário mostra onde a IA já participa das decisões da empresa e é a base para todas as demais etapas: classificação, controles, avaliação de impacto e resposta a pedidos de revisão.\n## 2. Quem participa\n- Responsável pela governança de IA: conduz o mapeamento e consolida o inventário.\n- Gestores das áreas: informam os usos e a decisão apoiada.\n- TI e compras: informam sistemas contratados e funcionalidades de IA embutidas.\n- Encarregado de dados: confere o uso de dados pessoais.\n## 3. Onde procurar a IA\n[ ] Ferramentas de IA generativa usadas pelos colaboradores, inclusive gratuitas e pessoais\n[ ] Funcionalidades de IA em ERP, CRM e sistemas de gestão\n[ ] Plataformas de recrutamento, avaliação de desempenho e gestão de pessoas\n[ ] Análise de crédito, cobrança, antifraude e risco\n[ ] Atendimento automatizado e chatbots\n[ ] Precificação, marketing, recomendação e segmentação de clientes\n[ ] Leitura e classificação de documentos e contratos\n[ ] Planilhas e modelos estatísticos desenvolvidos internamente\n[ ] Integrações por API e extensões de navegador\n## 4. Roteiro de conversa com cada área\n- Quais ferramentas ou sistemas da área usam IA, inclusive as embutidas em outros sistemas?\n- Que decisão cada uma apoia? Quem decide no fim?\n- A IA informa, recomenda ou decide? Alguém revisa antes de a decisão produzir efeito?\n- Quem é afetado pela decisão? Ela alcança emprego, crédito, preço ou acesso a serviços?\n- Quais dados são usados? Há dados pessoais ou sensíveis?\n- Como a área sabe que o resultado está correto?\n- O que acontece quando a IA erra?\n## 5. Passo a passo\n- Semana 1: comunicar o mapeamento, enviar o roteiro às áreas e levantar a lista de sistemas com TI e compras.\n- Semana 2: conversar com cada área e preencher uma linha por uso.\n- Semana 3: classificar cada uso pela matriz e indicar o responsável.\n- Semana 4: validar o inventário com o encarregado de dados e apresentá-lo à direção.\n## 6. Campos do inventário\n| Campo | O que registrar | Exemplo |\n| Identificador | Código do uso | IA-07 |\n| Uso de IA | Descrição curta | Triagem de currículos |\n| Área | Área responsável | Recursos Humanos |\n| Ferramenta e fornecedor | Nome do sistema e de quem fornece | [plataforma de recrutamento] |\n| Decisão apoiada | Que decisão a IA apoia | Pré-seleção de candidatos para entrevista |\n| Papel da IA | Informa, recomenda, decide com revisão, decide sem revisão | Recomenda |\n| Pessoas afetadas | Quem sofre os efeitos | Candidatos |\n| Efeitos | Sem efeito direto, efeito sobre pessoas, efeito sobre direitos ou oportunidades | Oportunidade de emprego |\n| Dados utilizados | Tipos de dados; há dados pessoais ou sensíveis? | Currículo, formação, experiência; dados pessoais |\n| Base legal | Base da LGPD para o tratamento | Procedimentos preliminares de contrato (art. 7º, V) |\n| Nível de controle | N1, N2 ou N3 | N3 |\n| Dono da decisão | Nome e cargo | [gerente de RH] |\n| Conferência dos resultados | Como e com que frequência | Amostra de 10% revisada por mês |\n| Avaliação de impacto | Data e situação | Pendente |\n| Última revisão | Data | [data] |\n## 7. Como classificar\n| Papel da IA | Sem efeito direto sobre pessoas | Com efeito sobre pessoas | Direitos, oportunidades ou dados sensíveis |\n| Informa | N1 | N2 | N3 |\n| Recomenda | N1 | N2 | N3 |\n| Decide, com revisão posterior | N2 | N3 | N3 |\n| Decide, sem revisão | N2 | N3 (evitar) | N3 (evitar) |\n## 8. Quando atualizar\n- Sempre que um novo uso de IA for adotado ou um fornecedor for trocado.\n- Quando mudar o papel da IA ou os dados utilizados.\n- Em revisão completa a cada seis meses.\n## 9. Checklist de conclusão\n[ ] Todas as áreas foram consultadas\n[ ] Cada uso tem decisão, papel da IA, pessoas afetadas e nível de controle\n[ ] Cada uso tem um dono da decisão\n[ ] Os usos com dados pessoais têm base legal registrada\n[ ] Os usos N3 têm data prevista para a avaliação de impacto\n[ ] O inventário foi apresentado à direção"}, {"id": "designacao", "titulo": "Ato de designação e mandato do responsável", "para": "Formaliza quem cuida da governança de IA, com atribuições, autoridade e matriz de responsabilidades.", "quando": "Logo no início; é o que tira a governança do papel.", "resp": "Alta direção.", "base": "LGPD, arts. 41 e 50; ISO/IEC 38507; ISO/IEC 42001, cláusula 5.3.", "texto": "# ATO DE DESIGNAÇÃO DO RESPONSÁVEL PELA GOVERNANÇA DE INTELIGÊNCIA ARTIFICIAL\n> Em empresas menores, a função pode ser acumulada pelo encarregado de dados ou por um gestor. O importante é que a designação seja formal e que a pessoa tenha tempo e autoridade para exercê-la.\nA [diretoria / sócios / conselho] da [razão social], considerando o uso crescente de inteligência artificial nas decisões da empresa, a necessidade de cumprir a legislação de proteção de dados e de se preparar para o marco legal da IA, resolve:\n## Art. 1º Designação\nDesignar [nome], [cargo], como responsável pela governança da inteligência artificial, a partir de [data], com dedicação de [horas semanais ou percentual].\n## Art. 2º Atribuições\n- Manter o inventário dos usos de IA e validar a classificação de cada uso.\n- Propor, divulgar e revisar a política de uso de IA.\n- Homologar, com TI, as ferramentas de IA autorizadas.\n- Apoiar os donos das decisões nas avaliações prévias e de impacto.\n- Coordenar, com o encarregado de dados, a resposta a incidentes e a pedidos de revisão.\n- Organizar a capacitação de gestores e usuários.\n- Acompanhar a regulação da IA (PL nº 2.338/2023, orientações da ANPD e referências internacionais).\n- Acompanhar os indicadores de governança e reportar à direção.\n## Art. 3º Autoridade\nO responsável poderá solicitar informações a qualquer área sobre o uso de IA e recomendar à direção a suspensão de uso que descumpra a política ou apresente risco relevante.\n## Art. 4º Recursos e apoio\nO responsável contará com o apoio de [jurídico, TI, segurança da informação, RH e encarregado de dados] e com orçamento de [valor ou \"a definir anualmente\"].\n## Art. 5º Reporte\nO responsável apresentará à direção, a cada [3] meses, relatório com os usos mapeados, as avaliações realizadas, os incidentes, os pedidos de revisão, a pontuação no autodiagnóstico e as mudanças regulatórias.\n## Art. 6º Vigência\nEste ato entra em vigor na data de sua assinatura.\n[Local e data]\n---\n[Nome e cargo de quem designa]\n---\nCiente: [nome do designado]\n## Anexo · Matriz de responsabilidades\n> R = executa; A = aprova e responde; C = é consultado; I = é informado.\n| Atividade | Alta direção | Resp. governança | Dono da decisão | Encarregado | Jurídico | TI |\n| Política de uso de IA | A | R | C | C | C | C |\n| Inventário e classificação | I | A | R | C | I | C |\n| Avaliação de impacto (N3) | A | C | R | C | C | C |\n| Revisão humana das decisões | I | I | A/R | I | I | I |\n| Pedidos de revisão de titulares | I | C | R | A | C | I |\n| Incidentes com IA | I | A | R | R | C | R |\n| Contratos com fornecedores | A | C | C | C | R | C |\n| Capacitação | I | A | C | C | I | R |"}, {"id": "explicabilidade", "titulo": "Guia de explicabilidade e avisos de uso de IA", "para": "Ficha de explicação por decisão e textos prontos de aviso e de resposta às pessoas afetadas.", "quando": "Para todas as decisões de nível N2 e N3.", "resp": "Dono da decisão, com jurídico e comunicação.", "base": "LGPD, arts. 6º, VI, 9º e 20, § 1º; PL nº 2.338/2023, arts. 5º, I, 6º, I, e 7º; CDC, art. 6º, III.", "texto": "# GUIA DE EXPLICABILIDADE E AVISOS DE USO DE IA\n> Uma explicação pronta transforma um pedido de revisão em resposta de minutos. Preencha uma ficha por decisão de nível N2 ou N3 e mantenha-a junto ao inventário.\n## Parte A · Ficha de explicação\n| Pergunta | Resposta |\n| Decisão | [ex.: pré-seleção de candidatos para entrevista] |\n| 1. Quais dados foram usados? | [ex.: formação, experiência na função, certificações informadas no currículo] |\n| 2. Quais critérios mais pesaram? | [ex.: anos de experiência na função e aderência aos requisitos da vaga] |\n| 3. Quais dados não são usados? | [ex.: idade, gênero, endereço, foto] |\n| 4. Qual é o papel da IA e o da pessoa? | [ex.: a IA ordena os currículos; o recrutador revisa a lista e decide quem chamar] |\n| 5. Quais são os limites conhecidos? | [ex.: currículos fora do padrão podem ser mal interpretados] |\n| 6. Como pedir revisão? | [canal e prazo] |\n| Responsável pela ficha | [nome] · revisada em [data] |\n## Parte B · Como escrever uma boa explicação\n- Use linguagem simples, sem termos técnicos.\n- Diga quais fatores pesaram, não como o algoritmo funciona por dentro.\n- Deixe claro quem decidiu no final.\n- Indique sempre como pedir revisão.\n- Não prometa o que a empresa não faz, como revisar todos os casos manualmente, se isso não acontece.\n## Parte C · Textos prontos\n### Aviso em política de privacidade ou contrato\nUtilizamos sistemas de inteligência artificial para apoiar [finalidade]. As decisões que produzem efeitos sobre você são revisadas por uma pessoa da nossa equipe. Você pode solicitar informações sobre os critérios utilizados e pedir a revisão da decisão pelo [canal].\n### Aviso em processo seletivo\nNeste processo seletivo, utilizamos uma ferramenta de inteligência artificial para organizar os currículos recebidos. A seleção dos candidatos é feita por recrutadores da [empresa]. Se quiser saber os critérios utilizados ou pedir a revisão da sua candidatura, escreva para [canal].\n### Aviso em atendimento automatizado\nVocê está sendo atendido por um assistente virtual com inteligência artificial. A qualquer momento, digite [palavra] para falar com uma pessoa.\n### Resposta a pedido de explicação\nOlá, [nome]. A análise da sua [solicitação] contou com apoio de um sistema de inteligência artificial, que considerou principalmente [critérios]. A decisão final foi tomada por [função], que revisou o resultado. Se discordar, você pode pedir a revisão pelo [canal], e responderemos em até [prazo].\n### Resposta após revisão: decisão mantida\nOlá, [nome]. Revisamos a decisão sobre a sua [solicitação]. Um profissional da nossa equipe analisou novamente o caso, considerando [critérios e informações apresentadas], e a decisão foi mantida pelos seguintes motivos: [motivos].\n### Resposta após revisão: decisão alterada\nOlá, [nome]. Revisamos a decisão sobre a sua [solicitação] e, após nova análise, ela foi alterada para [nova decisão]. Agradecemos por nos procurar.\n## Parte D · Checklist\n[ ] Há ficha de explicação para cada decisão N2 e N3\n[ ] Os avisos estão publicados nos canais em que a decisão é comunicada\n[ ] A equipe de atendimento conhece os textos de resposta\n[ ] As fichas são revistas quando o sistema ou os critérios mudam"}, {"id": "impacto", "titulo": "Roteiro de avaliação de impacto algorítmico", "para": "Avaliação prévia completa dos usos de nível crítico (N3), com matriz de riscos e aprovação.", "quando": "Antes de implantar um uso N3 e sempre que ele mudar de forma relevante.", "resp": "Dono da decisão, com responsável pela governança, TI, jurídico e encarregado de dados.", "base": "PL nº 2.338/2023, arts. 25 e 26; AI Act, art. 27; LGPD, art. 38; ISO/IEC 42001, cláusula 6.1.4.", "texto": "# AVALIAÇÃO DE IMPACTO ALGORÍTMICO\n> Avaliar antes de implantar custa algumas reuniões. Corrigir depois custa contratos, clientes e reputação. Quando houver dados pessoais, este roteiro pode ser integrado ao RIPD da LGPD.\n## 1. Identificação\n| Campo | Preenchimento |\n| Uso avaliado | [código do inventário e descrição] |\n| Dono da decisão | [nome e cargo] |\n| Equipe da avaliação | [nomes e áreas] |\n| Data | [data] |\n| Tipo | [inicial / revisão] |\n## 2. Descrição do sistema\n- Sistema e fornecedor: [nome; desenvolvido internamente ou contratado]\n- Decisão apoiada: [descrição]\n- Papel da IA: [informa / recomenda / decide com revisão / decide sem revisão]\n- Volume: [decisões por mês]\n- Como o resultado chega à pessoa afetada: [descrição]\n## 3. Finalidade e necessidade\n- Qual problema a IA resolve?\n- Por que usar IA, e não outro meio?\n- O benefício esperado é proporcional aos riscos?\n## 4. Pessoas afetadas\n- Quem é afetado e quantas pessoas, aproximadamente?\n- Há crianças, adolescentes, idosos, pessoas com deficiência ou outros grupos vulneráveis?\n- A decisão alcança emprego, crédito, preço, saúde, educação ou acesso a serviços?\n## 5. Dados\n- Origem dos dados de treinamento e de operação: [descrição]\n- Os dados representam a população brasileira atendida (regiões, idade, gênero, raça e cor, renda)?\n- Há dados pessoais sensíveis? Qual é a base legal?\n- Os dados são transferidos para fora do país?\n## 6. Matriz de riscos\n> Probabilidade e impacto de 1 (baixo) a 3 (alto); nível = probabilidade × impacto.\n| Risco | Exemplo | Probabilidade | Impacto | Nível | Medida de mitigação | Responsável |\n| Discriminação | Resultados piores para um grupo de pessoas | [ ] | [ ] | [ ] | [teste de viés por grupo] | [ ] |\n| Erro de decisão | Recomendação incorreta aceita sem revisão | [ ] | [ ] | [ ] | [revisão humana e amostragem] | [ ] |\n| Opacidade | Empresa incapaz de explicar a decisão | [ ] | [ ] | [ ] | [ficha de explicação] | [ ] |\n| Privacidade | Uso de dados além da finalidade | [ ] | [ ] | [ ] | [minimização e RIPD] | [ ] |\n| Segurança | Ataque, vazamento ou manipulação do sistema | [ ] | [ ] | [ ] | [testes e controles de acesso] | [ ] |\n| Dependência do fornecedor | Mudança do sistema sem aviso | [ ] | [ ] | [ ] | [cláusulas contratuais] | [ ] |\n| Trabalhadores | Mudança de funções sem preparo | [ ] | [ ] | [ ] | [plano de transição] | [ ] |\n| Meio ambiente | Consumo intensivo de recursos computacionais | [ ] | [ ] | [ ] | [avaliação de alternativas] | [ ] |\n## 7. Supervisão humana\n- Quem revisa a decisão e com que autoridade?\n- Em que casos a revisão é obrigatória?\n- Como são registrados os casos em que a recomendação foi alterada?\n## 8. Testes realizados\n- Acurácia e desempenho: [resultado]\n- Diferenças entre grupos: [resultado]\n- Casos brasileiros e idioma: [resultado]\n## 9. Conclusão\n| Item | Resultado |\n| Risco residual | [baixo / médio / alto] |\n| Recomendação | [aprovar / aprovar com condições / não aprovar] |\n| Condições | [lista] |\n| Monitoramento | [indicadores e frequência] |\n| Próxima revisão | [data] |\n## 10. Aprovação\n[Local e data]\n---\n[Alta direção ou comitê]"}, {"id": "incidentes", "titulo": "Procedimento de resposta a incidentes e erros com IA", "para": "O que fazer, em que prazo e quem avisar quando a IA erra ou causa dano.", "quando": "Antes do primeiro incidente: é preciso estar pronto.", "resp": "Responsável pela governança de IA, encarregado de dados, TI e dono da decisão.", "base": "LGPD, arts. 46 e 48; Resolução CD/ANPD nº 15/2024; PL nº 2.338/2023, art. 42; CDC, art. 14.", "texto": "# PROCEDIMENTO DE RESPOSTA A INCIDENTES E ERROS COM IA\n> Quando o incidente acontece, um procedimento pronto reduz o dano e mantém a empresa dentro dos prazos legais. Confira os prazos na regulamentação vigente da ANPD.\n## 1. O que é incidente com IA\n- Erro relevante em decisão apoiada por IA, com efeito sobre pessoas.\n- Tratamento desigual de um grupo de pessoas.\n- Vazamento, acesso indevido ou uso de dados pessoais fora da finalidade.\n- Falha, ataque ou manipulação do sistema.\n- Uso de IA em desacordo com a política da empresa.\n## 2. Classificação da gravidade\n| Gravidade | Exemplos | Prazo para conter |\n| Baixa | Erro isolado, corrigido sem efeito para a pessoa | 5 dias úteis |\n| Média | Erro com efeito sobre poucas pessoas, reversível | 48 horas |\n| Alta | Erros repetidos, tratamento desigual ou dados pessoais expostos | 24 horas |\n| Crítica | Dano relevante a pessoas, dados sensíveis expostos ou repercussão pública | Imediato |\n## 3. Passo a passo\n| Etapa | O que fazer | Quem | Prazo |\n| 1. Comunicar | Avisar o responsável pela governança de IA e o dono da decisão | Quem identificou | Até 24 horas |\n| 2. Conter | Suspender o uso ou voltar à decisão manual, se necessário | Dono da decisão e TI | Conforme a gravidade |\n| 3. Avaliar | Identificar pessoas afetadas, dados envolvidos, causa e gravidade | Responsável pela governança | Até 2 dias úteis |\n| 4. Comunicar à ANPD e aos titulares | Quando houver incidente de segurança com dados pessoais que possa causar risco ou dano relevante | Encarregado de dados | 3 dias úteis (Res. CD/ANPD nº 15/2024) |\n| 5. Corrigir | Reparar o erro para as pessoas afetadas e ajustar o sistema ou o processo | Dono da decisão | Conforme o plano |\n| 6. Registrar e aprender | Preencher o registro e levar o caso ao relatório da direção | Responsável pela governança | Até 10 dias úteis |\n## 4. Registro do incidente\n| Campo | Preenchimento |\n| Número | [ ] |\n| Data e hora da identificação | [ ] |\n| Sistema e uso de IA | [ ] |\n| Descrição | [ ] |\n| Gravidade | [baixa / média / alta / crítica] |\n| Pessoas afetadas | [quem e quantas] |\n| Dados envolvidos | [tipos; há dados sensíveis?] |\n| Medidas de contenção | [ ] |\n| Comunicações feitas | [ANPD, titulares, fornecedor, outros; datas] |\n| Causa | [ ] |\n| Correção | [ ] |\n| Lições aprendidas | [ ] |\n| Encerrado em | [data] · por [nome] |\n## 5. Checklist de comunicação\n[ ] Dono da decisão e responsável pela governança avisados\n[ ] Encarregado de dados avaliou se há incidente de segurança com dados pessoais\n[ ] ANPD e titulares comunicados no prazo, quando exigido\n[ ] Fornecedor notificado e solicitado a apoiar a investigação\n[ ] Direção informada nos casos de gravidade alta ou crítica\n## 6. Contatos\n| Função | Nome | Contato |\n| Responsável pela governança de IA | [ ] | [ ] |\n| Encarregado de dados | [ ] | [ ] |\n| TI e segurança | [ ] | [ ] |\n| Jurídico | [ ] | [ ] |"}, {"id": "revisao", "titulo": "Canal de revisão e registro de supervisão humana", "para": "Fluxo para pedidos de revisão das pessoas afetadas e registro das revisões humanas internas.", "quando": "Para todas as decisões de nível N2 e N3 que afetam pessoas.", "resp": "Dono da decisão e encarregado de dados.", "base": "LGPD, arts. 18, 19 e 20; Lei nº 12.414/2011, art. 5º, VI; PL nº 2.338/2023, arts. 6º, II e III, 7º e 8º.", "texto": "# CANAL DE REVISÃO DE DECISÕES E REGISTRO DE SUPERVISÃO HUMANA\n> Um canal de revisão resolve dentro de casa o que, sem ele, vai para a ANPD ou para a Justiça. E o registro das revisões internas é a prova de que a decisão foi da empresa, e não da máquina.\n## Parte A · Canal de revisão para pessoas afetadas\n| Item | Definição |\n| Canal | [e-mail, formulário ou telefone] |\n| Onde é divulgado | [site, contratos, avisos, respostas ao cliente] |\n| Prazo de resposta | [até 15 dias] |\n| Responsável | [dono da decisão, com o encarregado] |\n### Fluxo\n| Etapa | O que fazer | Prazo |\n| 1. Receber | Registrar o pedido com data, pessoa e decisão contestada | No dia |\n| 2. Encaminhar | Enviar ao dono da decisão e ao encarregado de dados | 1 dia útil |\n| 3. Revisar | Pessoa com autoridade reexamina o caso, considerando as informações trazidas, sem se limitar ao resultado da IA | Até 10 dias |\n| 4. Responder | Informar os critérios utilizados e o resultado da revisão | Até o prazo definido |\n| 5. Corrigir | Se a decisão for alterada, verificar se outros casos têm o mesmo problema | Após a resposta |\n### Registro dos pedidos\n| Nº | Data | Decisão contestada | Revisor | Resultado | Respondido em |\n| [ ] | [ ] | [ ] | [ ] | [mantida / alterada] | [ ] |\n## Parte B · Registro de supervisão humana interna\n> Preencha sempre que o revisor alterar ou rejeitar a recomendação da IA. Esses registros também mostram se a revisão é efetiva ou apenas formal.\n| Data | Caso | Recomendação da IA | Decisão final | Alterou? | Justificativa | Revisor |\n| [ ] | [ ] | [ ] | [ ] | [sim / não] | [ ] | [ ] |\n## Parte C · Indicadores\n- Número de pedidos de revisão por mês.\n- Prazo médio de resposta.\n- Percentual de decisões alteradas após pedido de revisão.\n- Percentual de recomendações da IA alteradas ou rejeitadas na revisão interna. Valores próximos de zero por muito tempo podem indicar revisão apenas formal.\n## Parte D · Checklist\n[ ] O canal está divulgado onde a decisão é comunicada\n[ ] O prazo de resposta foi definido e é cumprido\n[ ] Os revisores têm autoridade para alterar a decisão\n[ ] Os pedidos e as revisões internas são registrados"}, {"id": "clausulas", "titulo": "Cláusulas e diligência para fornecedores de IA", "para": "Cláusulas contratuais mínimas e questionário de verificação do fornecedor antes da contratação.", "quando": "Em toda contratação ou renovação de solução com IA.", "resp": "Jurídico e compras, com responsável pela governança e encarregado de dados.", "base": "LGPD, arts. 33, 39, 42 e 46; CDC, art. 14; PL nº 2.338/2023, art. 18.", "texto": "# CLÁUSULAS E DILIGÊNCIA PARA FORNECEDORES DE IA\n> O contrato certo divide o risco com o fornecedor, em vez de deixá-lo inteiro com a sua empresa. Adapte a redação com o jurídico ao tipo de contrato.\n## Parte A · Questionário de diligência do fornecedor\n[ ] Qual é a finalidade do sistema e quais são as suas limitações conhecidas?\n[ ] Com quais dados o modelo foi treinado? Eles representam a população brasileira?\n[ ] O sistema foi testado quanto a diferenças de resultado entre grupos de pessoas? Com que resultado?\n[ ] Os dados da contratante serão usados para treinar ou melhorar modelos?\n[ ] Onde os dados são armazenados e processados? Há transferência internacional?\n[ ] Quais medidas de segurança são adotadas? Há certificações, como ISO/IEC 27001 ou 42001?\n[ ] O sistema gera registros que permitem reconstituir uma decisão?\n[ ] Como e em que prazo o fornecedor comunica incidentes?\n[ ] O fornecedor apoia a resposta a pedidos de explicação e de revisão?\n[ ] Como são comunicadas as atualizações relevantes do sistema?\n## Parte B · Cláusulas\n### Cláusula 1 · Transparência\nO FORNECEDOR informará à CONTRATANTE a finalidade, o funcionamento geral, as principais variáveis consideradas, as limitações conhecidas e os níveis de desempenho do sistema, bem como comunicará, com antecedência mínima de [30] dias, as atualizações que possam alterar os seus resultados.\n### Cláusula 2 · Uso dos dados\nOs dados fornecidos pela CONTRATANTE serão utilizados exclusivamente para a execução deste contrato, sendo vedado o seu uso para treinamento, aprimoramento de modelos ou qualquer outra finalidade sem autorização prévia e por escrito.\n### Cláusula 3 · Proteção de dados\nO FORNECEDOR atuará como operador, nos termos da LGPD, e tratará os dados pessoais conforme as instruções da CONTRATANTE, adotando medidas de segurança, técnicas e administrativas, aptas a proteger os dados.\n### Cláusula 4 · Localização e transferência\nO FORNECEDOR informará os locais de armazenamento e processamento dos dados e somente realizará transferência internacional nas hipóteses previstas na LGPD e na regulamentação da ANPD.\n### Cláusula 5 · Incidentes\nO FORNECEDOR comunicará à CONTRATANTE qualquer incidente que envolva o sistema ou os dados em até [24/48] horas após dele tomar conhecimento, com as informações necessárias para as comunicações exigidas em lei.\n### Cláusula 6 · Registros e auditoria\nO FORNECEDOR manterá registros que permitam reconstituir as decisões apoiadas pelo sistema e fornecerá as informações e os documentos necessários para avaliações, auditorias e respostas a autoridades.\n### Cláusula 7 · Direitos das pessoas afetadas\nO FORNECEDOR apoiará a CONTRATANTE na resposta a pedidos de explicação, de revisão e de exercício de direitos dos titulares, no prazo de [5] dias úteis.\n### Cláusula 8 · Não discriminação\nO FORNECEDOR declara ter adotado medidas para identificar e mitigar vieses discriminatórios e compromete-se a corrigir, sem custo adicional, resultados discriminatórios identificados.\n### Cláusula 9 · Responsabilidades\nO FORNECEDOR responderá pelos danos causados por defeitos do sistema, por descumprimento deste contrato ou da legislação aplicável, assegurado o direito de regresso da CONTRATANTE.\n### Cláusula 10 · Encerramento\nAo término do contrato, o FORNECEDOR devolverá ou eliminará os dados da CONTRATANTE, conforme a escolha desta, e apresentará declaração de eliminação."}, {"id": "capacitacao", "titulo": "Programa de capacitação em uso responsável da IA", "para": "Conteúdo, carga horária e registro da capacitação por público, com teste de aprendizagem.", "quando": "Antes de liberar o uso de IA em decisões e, depois, uma vez por ano.", "resp": "Responsável pela governança de IA e RH.", "base": "AI Act, art. 4º; ISO/IEC 42001, cláusulas 7.2 e 7.3; LGPD, art. 50.", "texto": "# PROGRAMA DE CAPACITAÇÃO EM USO RESPONSÁVEL DA IA\n> Pessoas preparadas usam melhor a IA e erram menos. Ajuste a carga horária ao porte da empresa; o conteúdo mínimo deve ser mantido.\n## 1. Objetivos\n- Mostrar o que a IA faz bem, onde erra e por quê.\n- Evitar o viés de automação, isto é, aceitar o resultado da IA sem questionar.\n- Garantir o uso seguro de dados nas ferramentas de IA generativa.\n- Preparar gestores para revisar, explicar e responder pelas decisões.\n## 2. Trilhas por público\n| Público | Carga | Conteúdo | Formato | Frequência |\n| Alta direção | 1 hora | Responsabilidade pelas decisões; obrigações legais; política; indicadores | Encontro presencial ou on-line | Anual |\n| Gestores donos de decisões | 3 horas | Módulos 1 a 5 | Oficina com casos práticos | Anual |\n| Usuários | 1,5 hora | Módulos 1 a 3 | On-line | Anual e na admissão |\n| Responsável pela governança | 8 horas ou mais | Todos os módulos e regulação | Curso externo | Anual |\n## 3. Módulos\n### Módulo 1 · O que é e o que não é IA\nComo os sistemas aprendem com dados; por que erram; alucinações em IA generativa; exemplos do dia a dia da empresa.\n### Módulo 2 · Viés de automação e uso crítico\nPor que tendemos a confiar demais na máquina; como revisar um resultado; quando desconfiar; exercício com casos reais.\n### Módulo 3 · IA generativa e dados\nO que nunca inserir nas ferramentas; ferramentas homologadas; revisão do conteúdo gerado; direitos autorais.\n### Módulo 4 · Decisões que afetam pessoas\nMatriz de níveis; revisão humana efetiva; como explicar uma decisão; canal de revisão; não discriminação.\n### Módulo 5 · Governança na prática\nInventário; avaliação de impacto; incidentes; contratos com fornecedores; indicadores.\n## 4. Teste de aprendizagem\n- Posso colar a planilha de clientes em uma ferramenta de IA gratuita para fazer um resumo? (Resposta esperada: não.)\n- A IA recomendou reprovar um candidato. O que devo fazer antes de seguir a recomendação? (Revisar os critérios e o caso.)\n- Um cliente pede a explicação de uma decisão. Onde encontro a resposta? (Na ficha de explicação.)\n- A IA errou e prejudicou um cliente. A quem aviso e em quanto tempo? (Ao responsável, em até 24 horas.)\n- Quem responde pela decisão tomada com apoio de IA? (O dono da decisão e a empresa, nunca a ferramenta.)\n## 5. Registro\n| Data | Público | Módulos | Instrutor | Participantes | Aproveitamento |\n| [ ] | [ ] | [ ] | [ ] | [nº] | [% de acertos] |\n## 6. Termo de ciência\nDeclaro que participei da capacitação em uso responsável da inteligência artificial, conheço a política de uso de IA da [empresa] e me comprometo a cumpri-la.\n---\n[Nome, área e data]"}, {"id": "indicadores", "titulo": "Painel de indicadores e relatório à direção", "para": "Indicadores com fórmula e meta, rotina de conferência dos resultados da IA e modelo de relatório trimestral.", "quando": "A partir do segundo trimestre de implantação.", "resp": "Responsável pela governança de IA.", "base": "ISO/IEC 42001, cláusula 9; PL nº 2.338/2023, art. 18, I; LGPD, art. 50.", "texto": "# PAINEL DE INDICADORES E RELATÓRIO À DIREÇÃO\n> Registros e números bem guardados são a melhor defesa: permitem mostrar, meses depois, como cada decisão foi tomada e conferida.\n## 1. Indicadores\n| Perspectiva | Indicador | Fórmula | Meta sugerida | Frequência |\n| Organizacional | Usos inventariados e classificados | usos classificados ÷ usos conhecidos | 100% | Trimestral |\n| Organizacional | Gestores capacitados | gestores capacitados ÷ total de gestores | 100% | Semestral |\n| Organizacional | Pontuação no autodiagnóstico | resultado do GEIA-D | Evolução positiva | Anual |\n| Ética | Decisões N2 e N3 com ficha de explicação | fichas ÷ decisões N2 e N3 | 100% | Trimestral |\n| Ética | Verificações de tratamento desigual | número de verificações realizadas | 1 por uso N3 por semestre | Semestral |\n| Ética | Recomendações alteradas na revisão humana | alteradas ÷ revisadas | Acompanhar a tendência | Mensal |\n| Legal | Usos com dados pessoais com base legal registrada | usos com base ÷ usos com dados pessoais | 100% | Trimestral |\n| Legal | Prazo médio de resposta a pedidos de revisão | soma dos prazos ÷ pedidos | Até 15 dias | Mensal |\n| Legal | Contratos com cláusulas de IA | contratos adequados ÷ contratos de IA | 100% | Semestral |\n| Legal | Incidentes tratados no prazo | no prazo ÷ total | 100% | Trimestral |\n## 2. Rotina de conferência dos resultados da IA\n| Nível | Como conferir | Amostra | Frequência |\n| N1 | Verificação pontual pelo usuário | Casos que pareçam estranhos | Contínua |\n| N2 | Dupla checagem de uma amostra | [5%] das decisões | Mensal |\n| N3 | Comparação com decisões humanas e verificação por grupo de pessoas | [10%] das decisões | Mensal |\nRegistre a data, a amostra, os erros encontrados e as medidas adotadas.\n## 3. Acompanhamento da regulação\n| Data | Fonte | Mudança | Efeito para a empresa | Providência |\n| [ ] | [PL nº 2.338/2023, ANPD, setor] | [ ] | [ ] | [ ] |\n## 4. Modelo de relatório trimestral\n### 1. Resumo\n[Três a cinco frases sobre a situação da governança de IA no trimestre.]\n### 2. Inventário\n[Número de usos por nível; novos usos; usos descontinuados.]\n### 3. Indicadores\n[Tabela com os indicadores do período e a comparação com o anterior.]\n### 4. Incidentes e pedidos de revisão\n[Quantidade, gravidade, prazo de resposta e principais causas.]\n### 5. Regulação\n[Mudanças no período e providências.]\n### 6. Plano para o próximo trimestre\n[Ações prioritárias, responsáveis e prazos.]\n### 7. Decisões solicitadas à direção\n[Aprovações, recursos ou suspensões necessárias.]"}], "itemModelo": {"1": "inventario", "2": "inventario", "3": "inventario", "4": "inventario", "5": "indicadores", "6": "explicabilidade", "7": "explicabilidade", "8": "impacto", "9": "revisao", "10": "incidentes", "11": "politica", "12": "designacao", "13": "impacto", "14": "indicadores", "15": "incidentes", "16": "politica", "17": "revisao", "18": "clausulas", "19": "indicadores", "20": "politica", "21": "capacitacao", "22": "capacitacao", "23": "clausulas", "24": "impacto", "25": "impacto"}, "sancao": {"L": "Passível de sanção hoje. A LGPD prevê advertência, multa de até 2% do faturamento no Brasil, limitada a R$ 50 milhões por infração, publicização da infração, bloqueio ou eliminação dos dados e suspensão ou proibição do tratamento (art. 52). A ANPD considera, na dosimetria, a adoção de política de boas práticas e governança (art. 52, § 1º).", "A": "Sem sanção hoje. Se o PL nº 2.338/2023 for aprovado como saiu do Senado, as sanções valerão 730 dias após a publicação da lei (art. 80): advertência, multa de até R$ 50 milhões por infração ou até 2% do faturamento bruto do grupo no Brasil, publicização, suspensão do sistema e proibição de tratar determinadas bases de dados (art. 50). A política de governança adotada pesa a favor na dosimetria (art. 50, § 1º).", "R": "Sem sanção direta. Reduz riscos, conta a favor na dosimetria de eventuais sanções e prepara a empresa para exigências de clientes, investidores e parceiros."}};
+const NUC = new Set(DATA.nucleo), ANT = new Set(DATA.antecipados);
+const EXEMPLO = [2,1,1,0,1, 1,0,0,2,1, 1,1,0,1,0, 2,0,1,1,0, 2,1,1,0,0];
+const KEY = 'geiad-respostas-v2';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = v => (Math.round(v * 10) / 10).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const tipo = i => NUC.has(i + 1) ? 'L' : ANT.has(i + 1) ? 'A' : 'R';
+let framed = true; try { framed = window.self !== window.top; } catch (e) {}
+const PESO = { L: 3, A: 2, R: 1 };
+const TIPO_NOME = { L: 'Legal vigente', A: 'Obrigatório PL', R: 'Recomendado' };
+const TIPO_TIT = { L: 'Prioridade 1 · exigência legal em vigor', A: 'Prioridade 2 · requisito antecipado do PL', R: 'Prioridade 3 · boas práticas e tendências' };
+const PRAZO = { 30: ['Curto prazo', 'até 30 dias'], 60: ['Médio prazo', '31 a 60 dias'], 90: ['Longo prazo', '61 a 90 dias'] };
+
+let answers = new Array(25).fill(null), done = new Array(25).fill(false), isExample = false, group = 'prazo';
+try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.a) && s.a.length === 25) { answers = s.a; isExample = !!s.ex; if (Array.isArray(s.d) && s.d.length === 25) done = s.d; } } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify({ a: answers, ex: isExample, d: done })); } catch (e) {} }
+function go(id) { const el = $(id); if (el) el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }
+document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); const m = e.target.closest('[data-model]'); if (m) openModel(m.dataset.model); });
+
+// questionário
+const form = $('form');
+DATA.dims.forEach(d => {
+  let h = `<header><h3><span class="code">${d.id}</span>${esc(d.nome)}<span class="dscore" id="ds-${d.id}"></span></h3><p class="q">${esc(d.pergunta)}</p></header>`;
+  DATA.itens.forEach((it, i) => {
+    if (it.d !== d.id) return;
+    const n = i + 1, pl = DATA.plano[i], tp = tipo(i), md = DATA.itemModelo[n];
+    h += `<div class="item"><span class="n">${String(n).padStart(2, '0')}</span><span class="t" id="t${n}">${esc(it.t)}${tp === 'L' ? '<span class="tag L">Legal</span>' : tp === 'A' ? '<span class="tag A">Obrigatório PL</span>' : ''}</span>
+      <span class="seg" role="radiogroup" aria-labelledby="t${n}">
+        <input type="radio" name="q${n}" id="q${n}-2" value="2"><label for="q${n}-2">Sim</label>
+        <input type="radio" name="q${n}" id="q${n}-1" value="1"><label for="q${n}-1">Parcial</label>
+        <input type="radio" name="q${n}" id="q${n}-0" value="0"><label for="q${n}-0">Não</label>
+      </span>
+      <details class="how"><summary>Por que e como implementar</summary><div class="inner">
+        <p class="why">${esc(DATA.ganho[i])}</p>
+        <dl><dt>O que fazer</dt><dd>${esc(pl[0])}</dd><dt>Evidência</dt><dd>${esc(pl[1])}</dd>
+        <dt>Base</dt><dd>${esc(pl[3])}</dd><dt>Prazo</dt><dd>${PRAZO[pl[4]][0].toLowerCase()} (${PRAZO[pl[4]][1]})</dd>
+        ${md ? `<dt>Modelo</dt><dd><button type="button" class="linkbtn" data-model="${md}">${esc(DATA.modelos.find(m => m.id === md).titulo)}</button></dd>` : ''}</dl></div></details></div>`;
+  });
+  const sec = document.createElement('section'); sec.className = 'dim card'; sec.innerHTML = h; form.appendChild(sec);
+});
+form.addEventListener('change', e => {
+  const m = e.target.name && e.target.name.match(/^q(\d+)$/); if (!m) return;
+  answers[+m[1] - 1] = +e.target.value; if (+e.target.value === 2) done[+m[1] - 1] = false;
+  isExample = false; save(); update();
+});
+function syncForm() { answers.forEach((v, i) => form.querySelectorAll(`input[name="q${i + 1}"]`).forEach(r => { r.checked = (v !== null && +r.value === v); })); }
+
+const map = $('map');
+DATA.dims.forEach(d => { map.insertAdjacentHTML('beforeend', `<span class="rl">${d.id}</span>`); DATA.itens.forEach((it, i) => { if (it.d === d.id) map.insertAdjacentHTML('beforeend', `<span class="c" id="c${i + 1}" title="Afirmativa ${i + 1}"></span>`); }); });
+DATA.dims.forEach(d => $('bars').insertAdjacentHTML('beforeend', `<div class="bar"><div class="lab"><span>${d.id} · ${esc(d.nome)}</span><b id="bv-${d.id}">–</b></div><div class="track"><div class="fill" id="bf-${d.id}" style="width:0%"></div><div class="ref" style="left:calc(${d.media}% - 1px)" title="Média das empresas pesquisadas: ${fmt(d.media)}%"></div></div></div>`));
+
+function levelOf(p) { return p < 40 ? ['Inicial', 'l1'] : p < 70 ? ['Em estruturação', 'l2'] : ['Estruturado', 'l3']; }
+function riskBand(x) { return x < 20 ? ['Baixa', 'var(--ok)'] : x < 45 ? ['Moderada', 'var(--warn)'] : x < 70 ? ['Alta', 'var(--hi)'] : ['Crítica', 'var(--crit)']; }
+function compute() {
+  const dim = {}; DATA.dims.forEach(d => { dim[d.id] = { pts: 0, ans: 0 }; });
+  let pts = 0, ans = 0, w = 0, wp = 0; const pend = { L: 0, A: 0, R: 0 };
+  answers.forEach((v, i) => {
+    if (v === null) return; const d = DATA.itens[i].d, tp = tipo(i);
+    pts += v; ans++; dim[d].pts += v; dim[d].ans++; w += PESO[tp]; wp += PESO[tp] * (2 - v) / 2; if (v < 2) pend[tp]++;
+  });
+  return { pts, ans, total: pts / 50 * 100, dim, risk: w ? wp / w * 100 : null, pend };
+}
+function planItems(all) {
+  const ord = { L: 0, A: 1, R: 2 };
+  return answers.map((v, i) => ({ v: all ? 0 : v, i, p: DATA.plano[i], tp: tipo(i) })).filter(o => o.v === 0 || o.v === 1)
+    .sort((a, b) => ord[a.tp] - ord[b.tp] || a.p[4] - b.p[4] || a.v - b.v || a.i - b.i);
+}
+function update() {
+  const r = compute();
+  $('exampleNote').hidden = !isExample;
+  // risco
+  const L = 282.74, g = $('gVal');
+  if (r.risk === null) { g.style.strokeDashoffset = L; $('gNum').textContent = '–'; $('rBand').textContent = 'Sem respostas'; $('rBand').style.color = ''; $('rSub').textContent = 'Quanto maior o índice, maior o peso do que está pendente. As exigências legais pesam três vezes mais.'; }
+  else { const [nm, col] = riskBand(r.risk); g.style.strokeDashoffset = L * (1 - r.risk / 100); g.style.stroke = col; $('gNum').textContent = Math.round(r.risk); $('rBand').textContent = 'Exposição ' + nm.toLowerCase(); $('rBand').style.color = col;
+    $('rSub').textContent = r.ans < 25 ? `Calculado com ${r.ans} de 25 respostas. Responda a todas para o índice completo.` : (r.pend.L ? 'O índice cai mais rápido quando você resolve primeiro as exigências legais.' : 'Nenhuma exigência legal pendente. Mantenha as evidências atualizadas.'); }
+  $('pend').innerHTML = r.ans ? `<div class="pL"><span>Exigências legais pendentes, passíveis de sanção hoje</span><b>${r.pend.L}</b></div><div class="pA"><span>Requisitos do PL pendentes, sanção futura</span><b>${r.pend.A}</b></div><div class="pR"><span>Boas práticas pendentes</span><b>${r.pend.R}</b></div>` : '';
+  $('total').innerHTML = `${Math.round(r.total)}<span>%</span>`;
+  const lv = $('level');
+  if (!r.ans) { lv.textContent = 'Sem respostas'; lv.className = 'pill l0'; } else { const [nm, cl] = levelOf(r.total); lv.textContent = 'Maturidade: ' + nm.toLowerCase(); lv.className = 'pill ' + cl; }
+  $('count').textContent = `${r.ans} de 25 respondidas · média da pesquisa: ${fmt(DATA.total)}%`;
+  answers.forEach((v, i) => { $('c' + (i + 1)).className = 'c' + (v === null ? '' : ' v' + v); });
+  DATA.dims.forEach(d => { const x = r.dim[d.id], p = x.pts / 10 * 100; $('bf-' + d.id).style.width = p + '%'; $('bv-' + d.id).textContent = x.ans ? `${Math.round(p)}%` : '–'; $('ds-' + d.id).textContent = x.ans ? `${x.pts} de 10 pontos` : ''; });
+  const idx = !r.ans ? -1 : (r.total < 40 ? 0 : r.total < 70 ? 1 : 2);
+  document.querySelectorAll('.track-card').forEach((el, i) => { el.classList.toggle('sel', i === idx); el.querySelector('.rec').hidden = i !== idx; });
+  renderPlan(r);
+}
+function renderPlan(r) {
+  const all = r.ans === 0, items = planItems(all);
+  $('planLead').textContent = all
+    ? 'Enquanto você não responde, o plano mostra o roteiro completo. Ao responder, ficam só as ações que faltam na sua empresa. A cor indica a prioridade, e o prazo indica a ordem prática de implantação.'
+    : (items.length ? `Faltam ${items.length} ações. Resolva primeiro o que é exigência legal, depois os requisitos do PL e, por fim, as boas práticas. Marque cada ação quando a evidência existir.` : 'Todas as afirmativas respondidas estão atendidas. Mantenha as evidências atualizadas e repita o diagnóstico ao menos uma vez por ano.');
+  $('tiers').innerHTML = ['L', 'A', 'R'].map(tp => { const n = items.filter(o => o.tp === tp).length;
+    return `<div class="card tier ${tp}"><span class="tag ${tp}" style="justify-self:start">${TIPO_NOME[tp]}</span><span class="num">${n}</span><h3>${TIPO_TIT[tp]}</h3><p>${esc(DATA.sancao[tp])}</p></div>`; }).join('');
+  const li = o => `<li class="act${done[o.i] ? ' done' : ''}"><input type="checkbox" id="k${o.i}" data-k="${o.i}" ${done[o.i] ? 'checked' : ''} aria-label="Concluída: afirmativa ${o.i + 1}"><div class="body">
+    <label class="txt" for="k${o.i}">${esc(o.p[0])}</label>
+    <div class="row"><span class="tag ${o.tp}">${TIPO_NOME[o.tp]}</span><small>${group === 'prazo' ? '' : PRAZO[o.p[4]][0] + ' · '}afirmativa ${o.i + 1}${o.v === 1 && !all ? ' · parcial' : ''}</small></div>
+    <small><b>Evidência:</b> ${esc(o.p[1])}. <b>Base:</b> ${esc(o.p[3])}.${DATA.itemModelo[o.i + 1] ? ` <button type="button" class="linkbtn noprint" data-model="${DATA.itemModelo[o.i + 1]}">Abrir modelo</button>` : ''}</small></div></li>`;
+  const cols = group === 'prazo' ? [30, 60, 90].map(d => [PRAZO[d][0], PRAZO[d][1], items.filter(o => o.p[4] === d)]) : ['L', 'A', 'R'].map((tp, k) => ['Prioridade ' + (k + 1), TIPO_NOME[tp], items.filter(o => o.tp === tp)]);
+  $('planCols').innerHTML = cols.map(([t, s, l]) => `<div class="card plan-col"><h3>${t}<span>${s}</span></h3>` + (l.length ? `<p class="prog">${l.filter(o => done[o.i]).length} de ${l.length} concluídas</p><ul>${l.map(li).join('')}</ul>` : `<p class="empty">Nenhuma ação pendente aqui.</p>`) + '</div>').join('');
+  const need = new Set(items.map(o => DATA.itemModelo[o.i + 1]).filter(Boolean));
+  document.querySelectorAll('.model').forEach(el => { el.querySelector('.rec').hidden = all || !need.has(el.dataset.id); });
+}
+$('planCols').addEventListener('change', e => { const k = e.target.dataset.k; if (k === undefined) return; done[+k] = e.target.checked; save(); renderPlan(compute()); });
+$('byPrazo').addEventListener('click', () => { group = 'prazo'; $('byPrazo').setAttribute('aria-pressed', 'true'); $('byPrio').setAttribute('aria-pressed', 'false'); renderPlan(compute()); });
+$('byPrio').addEventListener('click', () => { group = 'prio'; $('byPrio').setAttribute('aria-pressed', 'true'); $('byPrazo').setAttribute('aria-pressed', 'false'); renderPlan(compute()); });
+
+function summaryText() {
+  const r = compute(), all = r.ans === 0, items = planItems(all), L = ['GEIA-D · Resultado do autodiagnóstico e checklist de implantação', ''];
+  if (r.ans) {
+    L.push(`Índice de exposição: ${Math.round(r.risk)} de 100 (${riskBand(r.risk)[0].toLowerCase()})`, `Pontuação de maturidade: ${Math.round(r.total)}% (${levelOf(r.total)[0]}) · ${r.ans} de 25 respondidas`, '');
+    L.push(`Exigências legais pendentes (passíveis de sanção hoje): ${r.pend.L}`, `Requisitos do PL nº 2.338/2023 pendentes (sanção futura): ${r.pend.A}`, `Boas práticas pendentes: ${r.pend.R}`, '');
+    DATA.dims.forEach(d => L.push(`${d.id} ${d.nome}: ${Math.round(r.dim[d.id].pts * 10)}% (média da pesquisa: ${fmt(d.media)}%)`));
+  } else L.push('Autodiagnóstico ainda não respondido. Roteiro completo de implantação:');
+  [30, 60, 90].forEach(d => { const l = items.filter(o => o.p[4] === d); if (!l.length) return;
+    L.push('', `${PRAZO[d][0].toUpperCase()} (${PRAZO[d][1]})`);
+    l.forEach(o => L.push(`[${done[o.i] ? 'x' : ' '}] P${{ L: 1, A: 2, R: 3 }[o.tp]} ${TIPO_NOME[o.tp]} · ${o.p[0]}`, `     Evidência: ${o.p[1]} | Base: ${o.p[3]} | Afirmativa ${o.i + 1}`)); });
+  L.push('', 'P1 = exigência legal em vigor, passível de sanção hoje. P2 = requisito do PL nº 2.338/2023, passível de sanção quando aprovado. P3 = boa prática.');
+  return L.join('\n');
+}
+function copyText(txt, box, st, okMsg) {
+  const fb = () => { box.hidden = false; box.value = txt; box.focus(); box.select(); st.textContent = 'Selecione o texto e copie.'; };
+  try { navigator.clipboard.writeText(txt).then(() => { box.hidden = true; st.textContent = okMsg; }, fb); } catch (e) { fb(); }
+}
+$('copy').addEventListener('click', () => copyText(summaryText(), $('copybox'), $('copyStatus'), 'Resultado e checklist copiados. Cole em um documento para imprimir ou compartilhar.'));
+try { $('printDate').textContent = new Date().toLocaleDateString('pt-BR'); } catch (e) {}
+if (!framed) { $('print').hidden = false; $('print').addEventListener('click', () => window.print()); }
+$('sample').addEventListener('click', () => { answers = EXEMPLO.slice(); done = new Array(25).fill(false); isExample = true; save(); syncForm(); update(); $('status').textContent = 'Exemplo carregado.'; });
+function clearAll() { answers = new Array(25).fill(null); done = new Array(25).fill(false); isExample = false; save(); syncForm(); update(); $('status').textContent = 'Respostas apagadas.'; }
+let armed = false;
+$('clear').addEventListener('click', () => { if (!armed) { armed = true; $('clear').textContent = 'Confirmar'; setTimeout(() => { armed = false; $('clear').textContent = 'Limpar'; }, 4000); return; } armed = false; $('clear').textContent = 'Limpar'; clearAll(); });
+$('clearFromExample').addEventListener('click', clearAll);
+
+// modelos
+function mdHtml(t) {
+  const out = []; let list = null, tbl = null;
+  const flush = () => { if (list) { out.push(`<ul${list.chk ? ' class="chk"' : ''}>${list.items.join('')}</ul>`); list = null; } if (tbl) { out.push(`<div class="tw"><table><thead><tr>${tbl[0].map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${tbl.slice(1).map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`); tbl = null; } };
+  t.split('\n').forEach(l => {
+    if (l.startsWith('|')) { if (list) flush(); const cells = l.replace(/^\||\|$/g, '').split('|').map(c => c.trim()); (tbl = tbl || []).push(cells); return; }
+    if (tbl) flush();
+    if (l.startsWith('- ') || l.startsWith('[ ] ')) { const chk = l.startsWith('[ ]'); if (list && list.chk !== chk) flush(); list = list || { chk, items: [] }; list.items.push(`<li>${esc(l.replace(/^(- |\[ \] )/, ''))}</li>`); return; }
+    flush();
+    if (!l.trim()) return;
+    if (l.startsWith('### ')) out.push(`<h5>${esc(l.slice(4))}</h5>`);
+    else if (l.startsWith('## ')) out.push(`<h4>${esc(l.slice(3))}</h4>`);
+    else if (l.startsWith('# ')) out.push(`<h3>${esc(l.slice(2))}</h3>`);
+    else if (l.startsWith('> ')) out.push(`<p class="note">${esc(l.slice(2))}</p>`);
+    else if (l.trim() === '---') out.push('<div class="sig"></div>');
+    else out.push(`<p>${esc(l)}</p>`);
+  });
+  flush(); return out.join('');
+}
+function mdText(t) { return t.split('\n').map(l => l.replace(/^#{1,3} /, '').replace(/^> /, '').replace(/^\[ \] /, '☐ ').replace(/^---$/, '______________________________')).join('\n'); }
+const MOD = id => DATA.modelos.find(m => m.id === id);
+$('models').innerHTML = DATA.modelos.map(m => `<article class="card model" id="m-${m.id}" data-id="${m.id}"><span class="tag A rec" hidden>Indicado para você</span><h3>${esc(m.titulo)}</h3><p>${esc(m.para)}</p>
+  <dl class="meta"><dt>Quando usar</dt><dd>${esc(m.quando)}</dd><dt>Quem conduz</dt><dd>${esc(m.resp)}</dd><dt>Base</dt><dd>${esc(m.base)}</dd></dl>
+  <div class="row"><button type="button" class="btn sm ghost" data-toggle="${m.id}">Ver modelo</button><button type="button" class="btn sm" data-copy="${m.id}">Copiar texto</button>${framed ? '' : `<button type="button" class="btn sm ghost" data-word="${m.id}">Baixar Word</button>`}<span class="status"></span></div>
+  <div class="doc" hidden tabindex="0">${mdHtml(m.texto)}</div></article>`).join('');
+function openModel(id) { const el = $('m-' + id); el.classList.add('open'); el.querySelector('.doc').hidden = false; el.querySelector('[data-toggle]').textContent = 'Fechar modelo'; el.scrollIntoView({ block: 'start' }); }
+function wordFile(m) {
+  const css = 'body{font-family:Arial,sans-serif;font-size:11pt;line-height:1.4}h3{font-size:15pt}h4{font-size:12.5pt;margin-top:14pt}h5{font-size:11pt}table{border-collapse:collapse;width:100%}th,td{border:1px solid #777;padding:4pt;vertical-align:top;font-size:10pt}th{background:#e6e6e6}.note{background:#eef1fb;padding:6pt}.sig{border-top:1px solid #000;width:240pt;margin-top:30pt}ul.chk{list-style:none}ul.chk li:before{content:"☐  "}';
+  const html = `<html><head><meta charset="utf-8"><title>${esc(m.titulo)}</title><style>${css}</style></head><body>${mdHtml(m.texto)}<p style="font-size:8pt;color:#666">Modelo do framework GEIA-D (PPGOLD/UFPR, 2026). Base: ${esc(m.base)} Este modelo não constitui parecer jurídico.</p></body></html>`;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + html], { type: 'application/msword' }));
+  a.download = 'GEIA-D_' + m.id + '.doc'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+$('models').addEventListener('click', e => {
+  const t = e.target.closest('[data-toggle]'), c = e.target.closest('[data-copy]'), w = e.target.closest('[data-word]');
+  if (t) { const el = $('m-' + t.dataset.toggle), d = el.querySelector('.doc'); d.hidden = !d.hidden; el.classList.toggle('open', !d.hidden); t.textContent = d.hidden ? 'Ver modelo' : 'Fechar modelo'; }
+  if (w) wordFile(MOD(w.dataset.word));
+  if (c) { const el = $('m-' + c.dataset.copy), st = el.querySelector('.status'), txt = mdText(MOD(c.dataset.copy).texto);
+    const fb = () => { openModel(c.dataset.copy); const r = document.createRange(); r.selectNodeContents(el.querySelector('.doc')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); st.textContent = 'Texto selecionado. Copie com Ctrl+C.'; };
+    try { navigator.clipboard.writeText(txt).then(() => { st.textContent = 'Copiado.'; }, fb); } catch (err) { fb(); } }
+});
+
+// tabelas e seções do framework
+const tbl = (head, rows) => `<thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map((c, k) => k === 0 ? `<td><b>${esc(c)}</b></td>` : `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+$('matur').innerHTML = tbl(['Nível de maturidade', 'Pontuação', 'Situação típica', 'O que fazer primeiro', 'Trilha'], DATA.matur);
+$('instr').innerHTML = tbl(['Instrumento', 'Conteúdo mínimo', 'Trilha'], DATA.instrumentos);
+$('princ').innerHTML = DATA.principios.map(p => `<div><b>${esc(p[0])}</b><span>${esc(p[1])}</span></div>`).join('');
+$('dimsT').innerHTML = tbl(['Dimensão', 'Pergunta orientadora', 'Componentes'], DATA.dims.map(d => [d.id + ' · ' + d.nome, d.pergunta, DATA.dimComp[d.id]]));
+$('prem').innerHTML = DATA.premissas.map(p => `<li>${esc(p)}</li>`).join('');
+$('legal').innerHTML = tbl(['Tema', 'Base legal', 'O que a lei já exige', 'Como o GEIA-D atende'], DATA.legal);
+$('razoes').innerHTML = DATA.razoes.map(r => `<div><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join('');
+$('pl').innerHTML = `<thead><tr><th>Requisito</th><th>PL nº 2.338/2023</th><th>Referências internacionais</th><th>No GEIA-D</th></tr></thead><tbody>` + DATA.pl.map(r => `<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td><span class="tag ${r[4]}">${r[4] === 'A' ? 'Obrigatório PL' : 'Legal'}</span> ${esc(r[3])}</td></tr>`).join('') + '</tbody>';
+const papelSet = $('papelSet'), efeitoSet = $('efeitoSet');
+DATA.papeis.forEach((p, i) => papelSet.insertAdjacentHTML('beforeend', `<label class="opt"><input type="radio" name="papel" id="papel${i}" value="${i}" ${i === 1 ? 'checked' : ''}><span>${esc(p)}</span></label>`));
+DATA.efeitos.forEach((e, i) => efeitoSet.insertAdjacentHTML('beforeend', `<label class="opt"><input type="radio" name="efeito" id="efeito${i}" value="${i}" ${i === 2 ? 'checked' : ''}><span>${esc(e)}</span></label>`));
+$('matrix').innerHTML = `<thead><tr><th>Papel da IA</th>${DATA.efeitos.map(e => `<th>${esc(e)}</th>`).join('')}</tr></thead><tbody>` + DATA.papeis.map((p, i) => `<tr><td>${esc(p)}</td>${DATA.matriz[i].map((c, j) => `<td class="cell ${c.slice(0, 2)}" id="mx${i}${j}">${esc(c)}</td>`).join('')}</tr>`).join('') + '</tbody>';
+function classify() {
+  const p = +document.querySelector('input[name="papel"]:checked').value, e = +document.querySelector('input[name="efeito"]:checked').value;
+  const cell = DATA.matriz[p][e], code = cell.slice(0, 2), lvl = DATA.controles.findIndex(c => c[0] === code), its = [];
+  for (let k = 0; k <= lvl; k++) DATA.controles[k][2].replace(/^Controles do N\d \+ /, '').split(/;\s*/).forEach(s => { s = s.replace(/\.$/, ''); its.push(s.charAt(0).toUpperCase() + s.slice(1)); });
+  $('classResult').innerHTML = `<div class="lvbadge"><span class="code ${code}">${code}</span><span class="nm">Nível ${esc(DATA.controles[lvl][1].toLowerCase())}</span></div>` +
+    (cell.includes('evitar') ? `<p class="warnp">Evite que a IA decida sozinha quando a decisão afeta pessoas. A LGPD garante ao titular o direito de pedir a revisão de decisões tomadas unicamente com base em tratamento automatizado (art. 20).</p>` : '') +
+    (code === 'N3' ? `<p style="font-size:14.5px"><span class="tag A">Obrigatório PL</span> No nível crítico, valem também a avaliação de impacto, os testes de desempenho e a supervisão humana com poder de reverter.</p>` : '') +
+    `<p style="font-size:14.5px;color:var(--muted)">Controles mínimos (cumulativos)</p><ul>${its.map(s => `<li>${esc(s)}</li>`).join('')}</ul>`;
+  document.querySelectorAll('#matrix td.cell').forEach(td => td.classList.remove('on')); $('mx' + p + e).classList.add('on');
+}
+papelSet.addEventListener('change', classify); efeitoSet.addEventListener('change', classify);
+$('steps').innerHTML = DATA.ciclo.map(c => { const [n, ...nm] = c[0].split(' '); return `<article class="card step"><span class="num">${esc(n.replace('.', ''))}</span><h3>${esc(nm.join(' '))}</h3><p>${esc(c[1])}</p><dl><dt>Responsável</dt><dd>${esc(c[2])}</dd><dt>Evidência</dt><dd>${esc(c[3])}</dd></dl></article>`; }).join('');
+$('norm').innerHTML = tbl(['Etapa', 'LGPD', 'PL nº 2.338/2023', 'AI Act (UE)', 'ISO/IEC 38507 e 42001'], DATA.normas);
+$('tracks').innerHTML = DATA.trilhas.map(t => `<article class="card track-card"><h3>${esc(t[0])}<span class="tag A rec" hidden>Sugerida para você</span></h3><p class="for">${esc(t[1])}.</p><ul>${t[2].replace(/\.$/, '').split(/;\s*/).map(s => `<li>${esc(s)}</li>`).join('')}</ul></article>`).join('');
+$('crit').innerHTML = tbl(['Perspectiva', 'Critério', 'Indicadores'], DATA.criterios);
+
+syncForm(); update(); classify();
+</script>
+
+</body>
+</html>
