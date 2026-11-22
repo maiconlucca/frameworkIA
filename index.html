@@ -284,7 +284,7 @@ td.cell.on { outline: 3px solid var(--accent); outline-offset: -3px; }
 footer.site { padding-block: 30px 44px; color: var(--muted); font-size: 13.5px; display: grid; gap: 8px; max-width: 86ch; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 @media print {
-  .hero, .nav, .noprint, .how, .actions, .planbar, .final, #form, #diagnostico > header, #diagnostico > .scroll, #diagnostico > .impacts, #usoCard, .crit, #pendencias, .divband, #modelos, .fw, .hoje, .footnote, footer.site, #copyStatus, .copybox, .example, .status { display: none !important; }
+  .hero, .nav, .noprint, .how, .actions, .planbar, .final, #form, #diagnostico > header, #diagnostico > .scroll, #diagnostico > .impacts, #usoCard, .critbox, #pendencias, .divband, #modelos, .fw, .hoje, .footnote, footer.site, #copyStatus, .copybox, .example, .status { display: none !important; }
   .printhead { display: block !important; margin-bottom: 10px; }
   .panel { box-shadow: none; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; break-inside: avoid; }
   .tiers { grid-template-columns: repeat(3, 1fr); } .tier { box-shadow: none; break-inside: avoid; }
@@ -519,7 +519,7 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
 
 .panel .status:empty { display: none; } .panel .example { flex-wrap: nowrap; } .panel .pend div { align-items: center; } .pn-top .big { font-size: 26px; } .panel { gap: 8px; }
 .panel .status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } .panel .map .c { height: 9px; } .panel .bars { gap: 5px; }
-.crit { display: grid; gap: 10px; margin-top: 6px; scroll-margin-top: 70px; }
+.critbox { display: grid; gap: 10px; margin-top: 6px; scroll-margin-top: 70px; }
 .crit-h { display: grid; gap: 2px; }
 .crit-h h3 { font-size: 22px; font-weight: 750; } .crit-h p:last-child { color: var(--muted); font-size: 14.5px; }
 #classResult { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 4px 28px; padding: 14px 18px; }
@@ -654,7 +654,7 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
     </div>
     <div id="maturNow"></div>
     <div class="scroll"><table id="matur"></table></div>
-    <div class="crit" id="classificar">
+    <div class="critbox" id="classificar">
       <div class="crit-h"><p class="comp"><i>2</i>Matriz de classificação e níveis de controle</p><h3>O nível de criticidade da sua empresa</h3><p>O resultado das duas perguntas de uso: o cuidado que o uso da IA exige.</p></div>
       <div class="card box" id="classResult" hidden></div>
       <details class="matdet"><summary>Ver a matriz completa de classificação</summary>
@@ -887,18 +887,16 @@ DATA.dims.forEach(d => {
   let h = `<header><h3><span class="code">${d.id}</span>${esc(d.nome)}<span class="dscore" id="ds-${d.id}"></span></h3><p class="q">${esc(d.pergunta)}</p></header>`;
   DATA.itens.forEach((it, i) => {
     if (it.d !== d.id) return;
-    const n = i + 1, pl = DATA.plano[i], tp = tipo(i), md = DATA.itemModelo[n];
+    const n = i + 1, pl = DATA.plano[i], tp = tipo(i);
     h += `<div class="item"><span class="n">${String(n).padStart(2, '0')}</span><span class="t" id="t${n}">${esc(it.t)}${tp === 'L' ? '<span class="tag L">Legal</span>' : tp === 'A' ? '<span class="tag A">Regulamentação</span>' : ''}</span>
       <span class="seg" role="radiogroup" aria-labelledby="t${n}">
         <input type="radio" name="q${n}" id="q${n}-2" value="2"><label for="q${n}-2">Sim</label>
         <input type="radio" name="q${n}" id="q${n}-1" value="1"><label for="q${n}-1">Parcial</label>
         <input type="radio" name="q${n}" id="q${n}-0" value="0"><label for="q${n}-0">Não</label>
       </span>
-      <details class="how"><summary>Por que e como implementar</summary><div class="inner">
+      <details class="how"><summary>Por que implementar</summary><div class="inner">
         <p class="why">${esc(DATA.ganho[i])}</p>
-        <dl><dt>O que fazer</dt><dd>${esc(pl[0])}</dd><dt>Evidência</dt><dd>${esc(pl[1])}</dd>
-        <dt>Base</dt><dd>${esc(pl[3])}</dd><dt>Prazo</dt><dd>${PRAZO[pl[4]][0].toLowerCase()} (${PRAZO[pl[4]][1]})</dd>
-        ${md ? `<dt>Modelo</dt><dd><button type="button" class="linkbtn" data-model="${md}">${esc(DATA.modelos.find(m => m.id === md).titulo)}</button></dd>` : ''}</dl></div></details></div>`;
+        <dl><dt>O que fazer</dt><dd>${esc(pl[0])}</dd><dt>Base</dt><dd>${esc(pl[3])}</dd><dt>Evidência</dt><dd>${esc(pl[1])}</dd></dl></div></details></div>`;
   });
   const sec = document.createElement('section'); sec.className = 'dim card'; sec.innerHTML = h; form.appendChild(sec);
 });
@@ -1161,6 +1159,7 @@ const FORM_HREF = 'https://forms.cloud.microsoft/r/hPSLya0pQD';
 const TOUR = [
   { sel: null, wide: 1, k: 'Tour guiado · cerca de 2 minutos', t: 'Prezado avaliador!', ps: [
     'Obrigado por participar da avaliação do GEIA-D, framework de governança ética e responsável da IA para a tomada de decisões em organizações brasileiras.',
+    'Aviso: esta é a versão do avaliador. A versão disponibilizada às empresas não terá o quadro do avaliador nem a parte de avaliação do framework; esses itens são apenas instruções para que você entenda o que precisa fazer nesta avaliação.',
     'Este tour vai guiá-lo, passo a passo, por duas coisas: como o framework está estruturado e como a página está organizada. Cada parte será destacada, com a explicação de para que serve, do que entrega à empresa e de qual aba do formulário de avaliação corresponde a ela.',
     'Ao final, você saberá onde encontrar cada componente e poderá responder ao questionário com segurança. Use Próximo e Anterior (ou as setas do teclado) e feche quando quiser em Pular tour. Depois, o botão Rever o tour guiado reabre o roteiro.'] },
   { sel: '#avaliar', k: 'Parte 1 · cabeçalho', t: 'O resumo para o avaliador', ps: ['Este quadro, na parte inicial da página, é só para o avaliador: resume a sequência da avaliação, que é percorrer os componentes, testar o autodiagnóstico como se fosse uma empresa e registrar a sua opinião no formulário anônimo. Volte a ele sempre que quiser se situar.'] },
