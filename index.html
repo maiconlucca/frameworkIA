@@ -284,7 +284,7 @@ td.cell.on { outline: 3px solid var(--accent); outline-offset: -3px; }
 footer.site { padding-block: 30px 44px; color: var(--muted); font-size: 13.5px; display: grid; gap: 8px; max-width: 86ch; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 @media print {
-  .hero, .nav, .noprint, .how, .actions, .planbar, .final, #form, #diagnostico > header, #diagnostico > .scroll, #diagnostico > .impacts, #usoCard, #pendencias, .divband, #modelos, .fw, .hoje, .footnote, footer.site, #copyStatus, .copybox, .example, .status { display: none !important; }
+  .hero, .nav, .noprint, .how, .actions, .planbar, .final, #form, #diagnostico > header, #diagnostico > .scroll, #diagnostico > .impacts, #usoCard, .crit, #pendencias, .divband, #modelos, .fw, .hoje, .footnote, footer.site, #copyStatus, .copybox, .example, .status { display: none !important; }
   .printhead { display: block !important; margin-bottom: 10px; }
   .panel { box-shadow: none; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; break-inside: avoid; }
   .tiers { grid-template-columns: repeat(3, 1fr); } .tier { box-shadow: none; break-inside: avoid; }
@@ -519,6 +519,17 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
 
 .panel .status:empty { display: none; } .panel .example { flex-wrap: nowrap; } .panel .pend div { align-items: center; } .pn-top .big { font-size: 26px; } .panel { gap: 8px; }
 .panel .status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } .panel .map .c { height: 9px; } .panel .bars { gap: 5px; }
+.crit { display: grid; gap: 10px; margin-top: 6px; scroll-margin-top: 70px; }
+.crit-h { display: grid; gap: 2px; }
+.crit-h h3 { font-size: 22px; font-weight: 750; } .crit-h p:last-child { color: var(--muted); font-size: 14.5px; }
+#classResult { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 4px 28px; padding: 14px 18px; }
+@media (max-width: 860px) { #classResult { grid-template-columns: minmax(0, 1fr); } }
+#classResult .cr-l, #classResult .cr-r { display: grid; gap: 8px; align-content: start; min-width: 0; }
+#classResult p { font-size: 14.5px; } #classResult .lvbadge .code { font-size: 28px; padding: 5px 11px; } #classResult .lvbadge .nm { font-size: 18px; }
+#classResult ul { columns: 2; column-gap: 24px; font-size: 13.5px; display: block; padding-left: 18px; } #classResult li { break-inside: avoid; margin-bottom: 3px; }
+@media (max-width: 640px) { #classResult ul { columns: 1; } }
+.matdet summary { cursor: pointer; font-weight: 600; color: var(--accent); font-size: 14.5px; padding: 4px 0; }
+.matdet .scroll { margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -563,9 +574,9 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
 <nav class="nav noprint" aria-label="Seções">
   <div class="wrap">
     <button type="button" data-go="diagnostico">Autodiagnóstico</button>
-    <button type="button" data-go="plano">Plano de ação</button>
-    <button type="button" data-go="trilhas">Trilhas</button>
     <button type="button" data-go="classificar">Matriz</button>
+    <button type="button" data-go="trilhas">Trilhas</button>
+    <button type="button" data-go="plano">Plano de ação</button>
     <button type="button" data-go="pendencias">Pendências legais</button>
     <button type="button" data-go="ciclo">Ciclo</button>
     <button type="button" data-go="modelos">Modelos</button>
@@ -581,7 +592,7 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
   <div class="printhead"><h1 style="font-size:22px">GEIA-D · Resultado do autodiagnóstico e checklist de implantação</h1><p style="font-size:12px;color:var(--muted)">Empresa: ______________________________ · Responsável: ____________________ · Data: <span id="printDate"></span></p></div>
   <section class="sec" id="diagnostico">
     <header>
-      <p class="comp"><i>7</i>Autodiagnóstico e níveis de maturidade</p>
+      <p class="comp"><i>1</i>Autodiagnóstico e níveis de maturidade</p>
       <h2>Descubra onde a sua empresa está hoje, em 10 minutos</h2>
       <p class="lead2">25 afirmativas sobre a governança e, no final, duas perguntas sobre o uso da IA. Cada resposta alimenta o framework: calcula o índice de exposição, define o nível de maturidade e o nível de criticidade, separa o que já é exigência legal do que é boa prática e monta sozinho o plano de ação, a trilha, o ciclo e os modelos indicados. As respostas ficam apenas no seu navegador.</p>
       <p class="howto">Marque <b>Sim</b> quando a prática existe, é aplicada de forma regular e pode ser comprovada. Marque <b>Parcial</b> quando existe só em parte das áreas ou de modo informal. Marque <b>Não</b> quando não existe ou você não sabe. <span class="tag L">Legal</span> indica exigência já em vigor. <span class="tag A">Regulamentação</span> indica requisito do projeto de lei da IA (PL nº 2.338/2023), do qual a empresa pode se antecipar.<a class="fn" href="#notas" data-go="notas" aria-label="Ver a nota 1">1</a></p>
@@ -643,17 +654,34 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
     </div>
     <div id="maturNow"></div>
     <div class="scroll"><table id="matur"></table></div>
+    <div class="crit" id="classificar">
+      <div class="crit-h"><p class="comp"><i>2</i>Matriz de classificação e níveis de controle</p><h3>O nível de criticidade da sua empresa</h3><p>O resultado das duas perguntas de uso: o cuidado que o uso da IA exige.</p></div>
+      <div class="card box" id="classResult" hidden></div>
+      <details class="matdet"><summary>Ver a matriz completa de classificação</summary>
+        <div class="scroll"><table class="mx" id="matrix" style="min-width:620px"></table></div>
+      </details>
+    </div>
   </section>
 
   <div class="divband res" id="resultado">
     <p class="mono">Seu resultado</p>
     <h2>O que fazer, na ordem certa</h2>
-    <p>Com as respostas, o framework organiza o que a sua empresa precisa resolver: o plano e o checklist, a trilha, o nível de criticidade, as obrigações legais pendentes, o ciclo a implementar e os modelos para começar.</p>
+    <p>Com as respostas, o framework organiza o que a sua empresa precisa resolver: a trilha a seguir, o passo a passo com o checklist, as obrigações legais pendentes, o ciclo a implementar e os modelos para começar.</p>
   </div>
+
+  <section class="sec fw" id="trilhas">
+    <header>
+      <p class="comp"><i>3</i>Trilhas de adoção</p>
+      <h2>Sua trilha de adoção: o caminho certo para o seu momento</h2>
+      <p class="lead2">Existe uma trilha sugerida para a sua empresa, definida pela maturidade da governança (a sua pontuação no autodiagnóstico) e pelo porte e nível de criticidade dos usos de IA. As trilhas são cumulativas: cada uma inclui a anterior e acrescenta uma camada de governança. Começar pela trilha certa evita tanto o excesso de burocracia quanto as lacunas. Esta trilha resume o que precisa ser feito; o passo a passo vem logo a seguir.</p>
+    </header>
+    <div class="hoje" id="hj-trilhas"></div>
+    <div class="tracks" id="tracks"></div>
+  </section>
 
   <section class="sec" id="plano">
     <header>
-      <p class="comp"><i>8</i>Plano de ação e roteiro de 90 dias</p>
+      <p class="comp"><i>4</i>Plano de ação e roteiro de 90 dias</p>
       <h2>Do diagnóstico à ação: o passo a passo, na ordem certa</h2>
       <p class="lead2">Cada pendência vira uma tarefa com a evidência esperada, a base legal e o prazo, ordenada por risco de sanção: primeiro o que a lei já exige, depois o que vem por aí e, por fim, as boas práticas. Um checklist pronto para a equipe executar.</p>
       <p id="planLead"></p>
@@ -674,30 +702,9 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
     <div class="plan" id="planCols"></div>
   </section>
 
-  <section class="sec fw" id="trilhas">
-    <header>
-      <p class="comp"><i>5</i>Trilhas de adoção</p>
-      <h2>Sua trilha de adoção: o caminho certo para o seu momento</h2>
-      <p class="lead2">Existe uma trilha sugerida para a sua empresa, definida pela maturidade da governança (a sua pontuação no autodiagnóstico) e pelo porte e nível de criticidade dos usos de IA. As trilhas são cumulativas: cada uma inclui a anterior e acrescenta uma camada de governança. Começar pela trilha certa evita tanto o excesso de burocracia quanto as lacunas.</p>
-    </header>
-    <div class="hoje" id="hj-trilhas"></div>
-    <div class="tracks" id="tracks"></div>
-  </section>
-
-  <section class="sec fw" id="classificar">
-    <header>
-      <p class="comp"><i>3</i>Matriz de classificação e níveis de controle</p>
-      <h2>O nível de criticidade da sua empresa</h2>
-      <p class="lead2">Este é o resultado das duas perguntas sobre o uso da IA, feitas no início do autodiagnóstico. A matriz cruza o papel da IA com os efeitos da decisão sobre as pessoas e entrega o nível de cuidado, básico, reforçado ou crítico, com os controles mínimos de cada um. Evita burocracia onde não precisa e descuido onde mais importa.</p>
-    </header>
-    <div class="hoje" id="hj-classificar"></div>
-    <div class="card box" id="classResult"></div>
-    <div class="scroll"><table class="mx" id="matrix" style="min-width:620px"></table></div>
-  </section>
-
   <section class="sec" id="pendencias">
     <header>
-      <p class="comp"><i>2</i>Obrigações legais pendentes</p>
+      <p class="comp"><i>5</i>Obrigações legais pendentes</p>
       <h2>As obrigações legais que a sua empresa precisa resolver</h2>
       <p class="lead2">Do conjunto completo de exigências que o framework verifica, esta é a lista personalizada: só o que está pendente na sua empresa, com a base legal e o modelo que ajuda a resolver. As exigências em vigor vêm primeiro, depois os requisitos da regulamentação da IA, dos quais a empresa pode se antecipar.<a class="fn" href="#notas" data-go="notas" aria-label="Ver a nota 1">1</a> Para ver também o que já está em dia, use o botão ao final da lista.</p>
     </header>
@@ -706,7 +713,7 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
 
   <section class="sec fw" id="ciclo">
     <header>
-      <p class="comp"><i>4</i>Ciclo de governança em seis etapas</p>
+      <p class="comp"><i>6</i>Ciclo de governança em seis etapas</p>
       <h2>O ciclo que a sua empresa precisa implementar para manter a IA sempre sob avaliação</h2>
       <p class="lead2">Estas são as seis etapas que a empresa aplica a cada uso de IA. Elas já aparecem no momento do mapeamento e das respostas ao diagnóstico, mas depois devem se tornar permanentes: o ciclo é repetido periodicamente, com a profundidade definida pelo nível de criticidade.</p>
     </header>
@@ -717,7 +724,7 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
 
   <section class="sec" id="modelos">
     <header>
-      <p class="comp"><i>6</i>Instrumentos de apoio</p>
+      <p class="comp"><i>7</i>Instrumentos de apoio</p>
       <h2>Documentos prontos para tirar a governança do papel</h2>
       <p class="lead2">Fornecemos documentos prontos para ajudar a sua empresa a tirar a governança do papel: política de uso, manual de inventário, ato de designação do responsável, guia de explicabilidade, roteiro de avaliação de impacto, procedimento de incidentes, canal de revisão, cláusulas para fornecedores, programa de capacitação e painel de indicadores. Cada um diz quando usar, quem conduz e em que norma se apoia. Abaixo estão os indicados para as pendências da sua empresa.</p>
     </header>
@@ -783,26 +790,26 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
       <p class="pm-g">1 · O cabeçalho, para o avaliador e para a apresentação do framework</p>
       <p class="pm-g">2 · O meio, onde a empresa responde e recebe o seu resultado</p>
       <ol class="pagemap">
-        <li><button type="button" data-go="diagnostico"><span class="pm-n">7</span><span><b>Autodiagnóstico</b><small>Duas perguntas de uso e 25 afirmativas: exposição e maturidade</small></span></button></li>
-        <li><button type="button" data-go="plano"><span class="pm-n">8</span><span><b>Plano de ação</b><small>O passo a passo e o checklist, na ordem certa</small></span></button></li>
-        <li><button type="button" data-go="trilhas"><span class="pm-n">5</span><span><b>Trilhas</b><small>Por onde começar, conforme o seu porte</small></span></button></li>
-        <li><button type="button" data-go="classificar"><span class="pm-n">3</span><span><b>Matriz</b><small>O nível de criticidade da sua empresa</small></span></button></li>
-        <li><button type="button" data-go="pendencias"><span class="pm-n">2</span><span><b>Pendências legais</b><small>Só as obrigações legais que faltam resolver</small></span></button></li>
-        <li><button type="button" data-go="ciclo"><span class="pm-n">4</span><span><b>Ciclo</b><small>A rotina que mantém a IA sempre sob avaliação</small></span></button></li>
-        <li><button type="button" data-go="modelos"><span class="pm-n">6</span><span><b>Modelos</b><small>Documentos prontos para adaptar</small></span></button></li>
+        <li><button type="button" data-go="diagnostico"><span class="pm-n">1</span><span><b>Autodiagnóstico</b><small>25 afirmativas e duas perguntas de uso: exposição e maturidade</small></span></button></li>
+        <li><button type="button" data-go="classificar"><span class="pm-n">2</span><span><b>Matriz</b><small>O nível de criticidade da sua empresa</small></span></button></li>
+        <li><button type="button" data-go="trilhas"><span class="pm-n">3</span><span><b>Trilhas</b><small>O resumo do caminho: por onde começar</small></span></button></li>
+        <li><button type="button" data-go="plano"><span class="pm-n">4</span><span><b>Plano de ação</b><small>O passo a passo e o checklist, na ordem certa</small></span></button></li>
+        <li><button type="button" data-go="pendencias"><span class="pm-n">5</span><span><b>Pendências legais</b><small>Só as obrigações legais que faltam resolver</small></span></button></li>
+        <li><button type="button" data-go="ciclo"><span class="pm-n">6</span><span><b>Ciclo</b><small>A rotina que mantém a IA sempre sob avaliação</small></span></button></li>
+        <li><button type="button" data-go="modelos"><span class="pm-n">7</span><span><b>Modelos</b><small>Documentos prontos para adaptar</small></span></button></li>
       </ol>
       <p class="pm-g">3 · A parte final, que explica o framework</p>
       <ol class="pagemap">
-        <li><button type="button" data-go="framework"><span class="pm-n">1</span><span><b>Princípios</b><small>A base: oito princípios e cinco dimensões</small></span></button></li>
-        <li><button type="button" data-go="lei"><span class="pm-n">2</span><span><b>Base legal</b><small>Todos os documentos legais que o framework verifica</small></span></button></li>
-        <li><button type="button" data-go="indicadores"><span class="pm-n">9</span><span><b>Indicadores</b><small>Como provar que funciona</small></span></button></li>
+        <li><button type="button" data-go="framework"><span class="pm-n">8</span><span><b>Princípios</b><small>A base: oito princípios e cinco dimensões</small></span></button></li>
+        <li><button type="button" data-go="lei"><span class="pm-n">5</span><span><b>Base legal</b><small>A lista completa dos documentos legais verificados (mesmo componente 5)</small></span></button></li>
+        <li><button type="button" data-go="indicadores"><span class="pm-n">9</span><span><b>Indicadores</b><small>Como acompanhar a governança</small></span></button></li>
       </ol>
     </div>
   </section>
 
   <section class="sec fw" id="framework">
     <header>
-      <p class="comp"><i>1</i>Princípios e dimensões</p>
+      <p class="comp"><i>8</i>Princípios e dimensões</p>
       <h2>A base do framework: oito princípios e cinco dimensões</h2>
       <p class="lead2">Os oito princípios éticos e legais são a base de muitas coisas no GEIA-D: é a partir deles que estão determinados os controles de governança. As cinco dimensões mostram em que esferas da empresa esses princípios são aplicados e avaliados. Foram construídos a partir de leis nacionais e internacionais, de regulamentos de organismos internacionais, de princípios reconhecidos e da consulta ao que importa para as empresas.</p>
     </header>
@@ -814,7 +821,7 @@ footer.site.footnote .reasons { grid-template-columns: repeat(4, minmax(0, 1fr))
 
   <section class="sec fw" id="lei">
     <header>
-      <p class="comp"><i>2</i>Base legal e requisitos obrigatórios</p>
+      <p class="comp"><i>5</i>Base legal e requisitos obrigatórios</p>
       <h2>Base legal: tudo o que o framework verifica</h2>
       <p class="lead2">Aqui está tudo o que o GEIA-D verifica do ponto de vista jurídico: os documentos legais que a sua empresa precisa ficar de olho, das exigências já em vigor aos requisitos que estão a caminho.<a class="fn" href="#notas" data-go="notas" aria-label="Ver a nota 1">1</a> No resultado, a empresa vê apenas o que está pendente; esta é a lista completa.</p>
     </header>
@@ -1053,10 +1060,10 @@ function classify() {
   box.hidden = false;
   const cell = DATA.matriz[p][e], code = cell.slice(0, 2), lvl = DATA.controles.findIndex(c => c[0] === code), its = [];
   for (let k = 0; k <= lvl; k++) DATA.controles[k][2].replace(/^Controles do N\d \+ /, '').split(/;\s*/).forEach(s => { s = s.replace(/\.$/, ''); its.push(s.charAt(0).toUpperCase() + s.slice(1)); });
-  box.innerHTML = `<p class="hk">Sua empresa hoje</p><div class="lvbadge"><span class="code ${code}">${code}</span><span class="nm">Nível ${esc(DATA.controles[lvl][1].toLowerCase())}</span></div>` +
+  box.innerHTML = `<div class="cr-l"><div class="lvbadge"><span class="code ${code}">${code}</span><span class="nm">Nível ${esc(DATA.controles[lvl][1].toLowerCase())}</span></div>` +
     `<p><b>Por que este nível?</b> Papel da IA: <b>${esc(DATA.papeis[p].replace(/\s*\(.*\)$/, '').toLowerCase())}</b>. Efeito da decisão: <b>${esc(DATA.efeitos[e].toLowerCase())}</b>. ${NIVEL_TXT[code]}</p>` +
-    (cell.includes('evitar') ? `<p class="warnp">Evite que a IA decida sozinha quando a decisão afeta pessoas. A LGPD garante ao titular o direito de pedir a revisão de decisões tomadas unicamente com base em tratamento automatizado (art. 20).</p>` : '') +
-    `<p class="hint"><b>O que a empresa precisa ter neste nível</b> (controles mínimos, cumulativos)</p><ul>${its.map(s => `<li>${esc(s)}</li>`).join('')}</ul>`;
+    (cell.includes('evitar') ? `<p class="warnp">Evite que a IA decida sozinha quando a decisão afeta pessoas (LGPD, art. 20).</p>` : '') + `</div>` +
+    `<div class="cr-r"><p class="hint"><b>O que a empresa precisa ter neste nível</b> (cumulativo)</p><ul>${its.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>`;
   $('mx' + p + e).classList.add('on');
 }
 papelSet.addEventListener('change', () => { uso.p = +document.querySelector('input[name="papel"]:checked').value; save(); classify(); renderHoje(compute()); });
@@ -1160,18 +1167,18 @@ const TOUR = [
   { sel: '.hero .wrap > div', k: 'Parte 1 · cabeçalho', t: 'A proposta do framework para as empresas', ps: ['O cabeçalho apresenta o que o GEIA-D oferece ao mercado: reunir em um só lugar tudo o que a empresa precisa ajustar em princípios éticos, adequação jurídica e governança, mapeando onde ela usa IA para decidir, identificando o que está em falta e organizando a ordem de solução.', 'Ele se baseia em leis nacionais e internacionais, em regulamentos de organismos internacionais, em princípios reconhecidos e na consulta ao que importa para as empresas.'] },
   { sel: '#entenda', k: 'Primeiro, entenda o framework', t: 'Veja como o GEIA-D está estruturado', ps: ['Vamos começar pela explicação do framework, que fica na parte final da página. Antes de responder, vale entender o que o GEIA-D reúne: em um só lugar, os princípios éticos, as exigências legais e os instrumentos de governança que normalmente estão espalhados em vários documentos.'] },
   { sel: '#figura1', mid: 1, cap: .62, k: 'Visão geral · Figura 1', t: 'Como ler a estrutura do GEIA-D', ps: ['A figura mostra o framework em camadas. Na base, os oito princípios éticos e legais são o alicerce de tudo. Acima, as dimensões de governança são as esferas da empresa em que esses princípios são avaliados. O ciclo de governança é o que a empresa precisa ficar aplicando, de forma contínua, a cada uso de IA.', 'No topo, as trilhas de adoção indicam o caminho conforme a maturidade da governança e o tamanho da empresa. À direita, os níveis de controle (N1 a N3) dizem o rigor exigido em cada uso, e a verificação confere se tudo funciona, com o autodiagnóstico e os indicadores.'] },
-  { sel: '#framework > header', c: 1, aba: 'Princípios', t: 'A base de muitas coisas: princípios e dimensões', ps: ['Os oito princípios são a base de muitas coisas no framework: é a partir deles que estão determinados os controles de governança. As cinco dimensões mostram em que esferas da empresa cada princípio é aplicado e avaliado.', 'Entender essa base explica por que cada exigência do resultado existe.'], w: 'Dá a razão de ser de todos os controles.' },
-  { sel: '#lei > header', c: 2, aba: 'Base legal', t: 'Tudo o que o framework valida', ps: ['Aqui está o conjunto jurídico completo que o framework verifica: as exigências em vigor (LGPD, CDC e outras) e os requisitos do projeto de lei da IA, dos quais a empresa pode se antecipar. No resultado, ela vê só o que está pendente; aqui está a lista inteira.', 'As notas e observações ficam no fim da página.'], w: 'Concentra em um só lugar documentos legais que estão espalhados.' },
+  { sel: '#framework > header', c: 8, aba: 'Princípios', t: 'A base de muitas coisas: princípios e dimensões', ps: ['Os oito princípios são a base de muitas coisas no framework: é a partir deles que estão determinados os controles de governança. As cinco dimensões mostram em que esferas da empresa cada princípio é aplicado e avaliado.', 'Entender essa base explica por que cada exigência do resultado existe.'], w: 'Dá a razão de ser de todos os controles.' },
+  { sel: '#lei > header', c: 5, aba: 'Base legal', t: 'Tudo o que o framework valida', ps: ['Aqui está o conjunto jurídico completo que o framework verifica: as exigências em vigor (LGPD, CDC e outras) e os requisitos do projeto de lei da IA, dos quais a empresa pode se antecipar. No resultado, ela vê só o que está pendente; aqui está a lista inteira.', 'As notas e observações ficam no fim da página.'], w: 'Concentra em um só lugar documentos legais que estão espalhados.' },
   { sel: '#indicadores > header', c: 9, aba: 'Indicadores', t: 'Indicadores para acompanhar a governança', ps: ['Os indicadores éticos, legais e organizacionais são essenciais e precisam estar sempre validados: mostram à direção, a clientes e a auditorias que a IA está sob controle e indicam cedo onde ajustar.'], w: 'Sem medir, não há como melhorar.' },
   { sel: '.nav', k: 'Como a página está organizada', t: 'A sequência que o respondente segue', ps: ['Agora, a sequência de uso. A página tem três partes: o cabeçalho, com o quadro do avaliador; o meio, onde a empresa responde e recebe o seu resultado (autodiagnóstico, plano, trilha, criticidade, pendências legais, ciclo e modelos); e o fim, com a explicação do framework que acabamos de ver.', 'Primeiro, o que dá resultado à empresa; depois, o que explica como ele funciona.'] },
   { sel: '.nav', k: 'Dica de navegação', t: 'Barra de abas', ps: ['O framework está dividido em seções, e cada aba leva direto a uma delas. Ao responder o questionário, se você não lembrar de algum componente, basta clicar na aba de mesmo nome: a página leva você exatamente à seção que procura.', 'Para as empresas, a barra serve para o mesmo: quem já sabe o que quer (o plano, um modelo, a base legal) chega em um clique, sem percorrer a página inteira.'] },
-  { sel: '#diagnostico > header', c: 7, aba: 'Autodiagnóstico', k: 'Parte 2 · resultado da empresa', t: 'Descubra onde a sua empresa está hoje', ps: ['É o ponto de partida e o que mais interessa à empresa. São 25 afirmativas, respondidas com Sim, Parcial ou Não, e, no final, duas perguntas sobre o papel da IA na decisão e o efeito sobre as pessoas. Leva cerca de 10 minutos.', 'Cada resposta alimenta o framework: calcula o índice de exposição ao risco, define o nível de maturidade e o de criticidade e monta sozinho o plano, a trilha, o ciclo e os modelos indicados. O painel ao lado atualiza em tempo real.'], w: 'Coleta a situação atual e personaliza todo o resultado.' },
-  { sel: '#plano > header', c: 8, aba: 'Plano de ação', t: 'O passo a passo, na ordem certa', ps: ['É a primeira coisa que a empresa quer ver depois de responder. Cada pendência vira uma tarefa com a evidência esperada, a base legal e o prazo dentro de 90 dias, ordenada por risco de sanção: primeiro o que a lei já exige, depois a regulamentação que vem por aí, por fim as boas práticas.', 'Um checklist pronto para a equipe executar e copiar.'], w: 'Resolve, na ordem certa, o que o diagnóstico identificou.' },
-  { sel: '#trilhas > header', c: 5, aba: 'Trilhas', t: 'O caminho certo para o seu momento', ps: ['Existe uma trilha sugerida para a empresa, definida pela maturidade da governança e pelo porte e criticidade dos usos de IA. As trilhas Essencial, Estruturada e Avançada são cumulativas, sem projeto gigante e sem área nova.'], w: 'A pontuação do autodiagnóstico indica a trilha sugerida e explica por quê.' },
-  { sel: '#classificar > header', c: 3, aba: 'Matriz', t: 'O nível de criticidade da empresa', ps: ['Nem todo uso de IA pede o mesmo cuidado. Aqui está o resultado das duas perguntas de uso feitas no autodiagnóstico: o nível de criticidade (básico, reforçado ou crítico), por que a empresa está nele e os controles mínimos que ela precisa ter.'], w: 'Define quanto do framework se aplica ao uso de IA da empresa.' },
-  { sel: '#pendencias > header', c: 2, aba: 'Pendências legais', t: 'As obrigações legais que faltam resolver', ps: ['Uma lista personalizada: do conjunto de documentos legais que o framework verifica, só o que está pendente na empresa, com a base legal e o modelo que ajuda a resolver. Um botão permite ver também o que a empresa já cumpre.'], w: 'Evita sanções e surpresas, mostrando em ordem de risco o que resolver primeiro.' },
-  { sel: '#ciclo > header', c: 4, aba: 'Ciclo', t: 'O ciclo que mantém a IA sempre sob avaliação', ps: ['Mapear, classificar, avaliar antes de usar, decidir com supervisão, monitorar e responder, capacitar e prestar contas: seis etapas que a empresa precisa implementar a cada uso de IA. Elas já aparecem no mapeamento e nas respostas, mas depois devem ser permanentes.'], w: 'Garante que a IA seja reavaliada sempre, e não só no dia da implantação.' },
-  { sel: '#modelos > header', c: 6, aba: 'Modelos', t: 'Documentos prontos para tirar a governança do papel', ps: ['Dez modelos completos, como política de uso, inventário, avaliação de impacto, canal de revisão e cláusulas para fornecedores. Aparecem primeiro os indicados para as pendências da empresa, e um botão mostra todos os documentos disponíveis.'], w: 'Poupa semanas de trabalho e reduz o risco de esquecer algo que a norma pede.' },
+  { sel: '#diagnostico > header', c: 1, aba: 'Autodiagnóstico', k: 'Parte 2 · resultado da empresa', t: 'Descubra onde a sua empresa está hoje', ps: ['É o ponto de partida e o que mais interessa à empresa. São 25 afirmativas, respondidas com Sim, Parcial ou Não, e, no final, duas perguntas sobre o papel da IA na decisão e o efeito sobre as pessoas. Leva cerca de 10 minutos.', 'Cada resposta alimenta o framework: calcula o índice de exposição ao risco, define o nível de maturidade e o de criticidade e monta sozinho o plano, a trilha, o ciclo e os modelos indicados. O painel ao lado atualiza em tempo real.'], w: 'Coleta a situação atual e personaliza todo o resultado.' },
+  { sel: '#classificar', c: 2, aba: 'Matriz', t: 'O nível de criticidade da empresa', ps: ['Nem todo uso de IA pede o mesmo cuidado. Logo abaixo da maturidade, o resultado das duas perguntas de uso feitas no fim do autodiagnóstico: o nível de criticidade (básico, reforçado ou crítico), por que a empresa está nele e os controles mínimos que ela precisa ter.'], w: 'Define quanto do framework se aplica ao uso de IA da empresa.' },
+  { sel: '#trilhas > header', c: 3, aba: 'Trilhas', t: 'O caminho certo para o seu momento', ps: ['É o resumo do que precisa ser feito: existe uma trilha sugerida para a empresa, definida pela maturidade da governança e pelo porte e criticidade dos usos de IA. As trilhas Essencial, Estruturada e Avançada são cumulativas, sem projeto gigante e sem área nova.'], w: 'A pontuação do autodiagnóstico indica a trilha sugerida e explica por quê.' },
+  { sel: '#plano > header', c: 4, aba: 'Plano de ação', t: 'O passo a passo, na ordem certa', ps: ['Depois do resumo da trilha, o detalhe. Cada pendência vira uma tarefa com a evidência esperada, a base legal e o prazo dentro de 90 dias, ordenada por risco de sanção: primeiro o que a lei já exige, depois a regulamentação que vem por aí, por fim as boas práticas.', 'Um checklist pronto para a equipe executar e copiar.'], w: 'Resolve, na ordem certa, o que o diagnóstico identificou.' },
+  { sel: '#pendencias > header', c: 5, aba: 'Pendências legais', t: 'As obrigações legais que faltam resolver', ps: ['Uma lista personalizada: do conjunto de documentos legais que o framework verifica, só o que está pendente na empresa, com a base legal e o modelo que ajuda a resolver. Um botão permite ver também o que a empresa já cumpre.'], w: 'Evita sanções e surpresas, mostrando em ordem de risco o que resolver primeiro.' },
+  { sel: '#ciclo > header', c: 6, aba: 'Ciclo', t: 'O ciclo que mantém a IA sempre sob avaliação', ps: ['Mapear, classificar, avaliar antes de usar, decidir com supervisão, monitorar e responder, capacitar e prestar contas: seis etapas que a empresa precisa implementar a cada uso de IA. Elas já aparecem no mapeamento e nas respostas, mas depois devem ser permanentes.'], w: 'Garante que a IA seja reavaliada sempre, e não só no dia da implantação.' },
+  { sel: '#modelos > header', c: 7, aba: 'Modelos', t: 'Documentos prontos para tirar a governança do papel', ps: ['Dez modelos completos, como política de uso, inventário, avaliação de impacto, canal de revisão e cláusulas para fornecedores. Aparecem primeiro os indicados para as pendências da empresa, e um botão mostra todos os documentos disponíveis.'], w: 'Poupa semanas de trabalho e reduz o risco de esquecer algo que a norma pede.' },
   { sel: '.nav .go', k: 'Último passo', t: 'Registre a sua avaliação', ps: ['Com os componentes em mente, abra o formulário anônimo (cerca de 20 minutos) e avalie cada um por relevância, clareza e aplicabilidade. Obrigado!'] }
 ];
 (function () {
